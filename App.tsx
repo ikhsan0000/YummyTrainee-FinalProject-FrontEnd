@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Onboarding from "./src/Authentication/Onboarding/Onboarding";
+import {Onboarding, Welcome} from "./src/Authentication";
 import { LoadAssets } from "./src/components";
 
 const AuthenticationStack = createStackNavigator();
@@ -12,6 +12,14 @@ const AuthenticationNavigator = () => {
       <AuthenticationStack.Screen
         name="OnBoarding"
         component={Onboarding}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <AuthenticationStack.Screen
+        name="Welcome"
+        component={Welcome}
         options={{
           headerShown: false,
         }}

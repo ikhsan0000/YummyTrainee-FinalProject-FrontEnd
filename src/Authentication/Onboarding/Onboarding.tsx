@@ -35,13 +35,12 @@ const slides = [
   {
     title: "Funky",
     subtitle: "Look Good, Feel Good",
-    description: "Dsicover the latest trends",
+    description: "Discover the latest trends",
     color: "#FFDDDD",
   },
 ];
 
 const Onboarding = () => {
-  // const scroll = useRef<Animated.ScrollView>(null);
   const scroll = React.createRef();
   const x = useSharedValue(0);
 
@@ -63,8 +62,6 @@ const Onboarding = () => {
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (e) => {
       x.value = e.contentOffset.x;
-        console.log("CurrentINDEX:" + x.value / width)
-
     },
   });
 
