@@ -1,18 +1,17 @@
-import React, { useRef } from "react";
+import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import Slide, { SLIDER_HEIGHT } from "./Slide";
 import Animated, {
-  interpolate,
   interpolateColor,
-  multiply,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
 import Subslide from "./Subslide";
 import Dot from "./Dot";
-const { width, lenght } = Dimensions.get("window");
+import { theme } from "../../components";
+import { StackNavigationProps } from "../../components/Navigation";
+const { width } = Dimensions.get("window");
 const slides = [
   {
     title: "Relaxed",
@@ -40,7 +39,7 @@ const slides = [
   },
 ];
 
-const Onboarding = () => {
+const Onboarding = ({ navigation }: StackNavigationProps<Routes, "Onboarding">) => {
   const scroll = React.createRef();
   const x = useSharedValue(0);
 
@@ -64,6 +63,8 @@ const Onboarding = () => {
       x.value = e.contentOffset.x;
     },
   });
+
+
 
   return (
     <View style={styles.container}>
@@ -114,22 +115,30 @@ const Onboarding = () => {
               animatedSubslider,
             ]}
           >
-            {slides.map(({ subtitle, description }, index) => (
-              <Subslide
-                key={index}
-                onPress={() => {
-                  if (scroll.current) {
-                    scroll.current.scrollTo({
-                      x: width * (index + 1),
-                      animated: true,
-                    });
-                  }
-                }}
-                last={index === slides.length - 1}
-                subtitle={subtitle}
-                description={description}
-              ></Subslide>
-            ))}
+            {slides.map(({ subtitle, description }, index) => {
+              const last = index === slides.length - 1;
+
+              return (
+                <Subslide
+                  key={index}
+                  onPress={() => {
+                    if(last){
+                      navigation.navigate("Welcome")
+                    } else {
+                      if (scroll.current) {
+                        scroll.current.scrollTo({
+                          x: width * (index + 1),
+                          animated: true,
+                        });
+                      }
+                    }
+                  }}
+                  subtitle={subtitle}
+                  description={description}
+                  last={last}
+                ></Subslide>
+              )
+            })}
           </Animated.View>
 
         </View>
@@ -141,7 +150,6 @@ const Onboarding = () => {
 
 export default Onboarding;
 
-const BORDER_RADIUS = 75;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -150,7 +158,7 @@ const styles = StyleSheet.create({
   slider: {
     height: SLIDER_HEIGHT,
     backgroundColor: "cyan",
-    borderBottomRightRadius: BORDER_RADIUS,
+    borderBottomRightRadius: theme.borderRadii.xl,
   },
   footer: {
     flex: 1,
@@ -158,11 +166,11 @@ const styles = StyleSheet.create({
   footerContent: {
     flex: 1,
     backgroundColor: "white",
-    borderTopLeftRadius: BORDER_RADIUS,
+    borderTopLeftRadius: theme.borderRadii.xl,
   },
   pagination: {
     flexDirection: "row",
-    height: BORDER_RADIUS,
+    height: theme.borderRadii.xl,
     justifyContent: "center",
     alignItems: "center",
   },
