@@ -6,7 +6,10 @@ import {
   Dimensions,
   StyleSheet,
   StatusBar,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { theme } from ".";
 import { Box } from "./Theme";
 
@@ -31,7 +34,7 @@ const Container = ({ children, footer }: ContainerProps) => {
             source={assets[0]}
             style={{
               width,
-              height: height * 0.61,
+              height: height * 0.41,
               borderBottomLeftRadius: theme.borderRadii.xl,
               overflow: "hidden",
             }}
@@ -55,12 +58,14 @@ const Container = ({ children, footer }: ContainerProps) => {
           borderTopLeftRadius={0}
           backgroundColor="white"
         >
-          {children}
+          <KeyboardAwareScrollView>{children}</KeyboardAwareScrollView>
         </Box>
       </Box>
-      <Box backgroundColor="secondary" padding="l">
+     
+   
+        <Box backgroundColor="secondary" padding="l">
           {footer}
-      </Box>
+        </Box>
     </Box>
   );
 };

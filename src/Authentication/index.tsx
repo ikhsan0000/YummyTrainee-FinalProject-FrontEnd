@@ -4,6 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Onboarding from './Onboarding';
 import Welcome from './Welcome';
 import Login from './Login';
+import SignUp from './SignUp';
+import ForgotPassword from './ForgotPassword';
 
 export {default as Onboarding} from "./Onboarding"
 export {default as Welcome} from "./Welcome"
@@ -31,6 +33,22 @@ export const AuthenticationNavigator = () => {
       <AuthenticationStack.Screen
         name="Login"
         component={Login}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <AuthenticationStack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <AuthenticationStack.Screen
+        name="ForgotPassword"
+        component={ForgotPassword}
         options={{
           headerShown: false,
         }}
