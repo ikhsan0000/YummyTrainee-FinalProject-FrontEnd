@@ -17,7 +17,7 @@ const Footer = ({ onPress, title, action }: FooterProps) => {
         <TouchableWithoutFeedback onPress={onPress}>
           <Box flexDirection="row" justifyContent="center">
             <Text variant="button" color="white">
-              {`${title} `}
+              {`${title}`}
             </Text>
             <Text marginLeft="s" variant="button" color="primary">
               {action}

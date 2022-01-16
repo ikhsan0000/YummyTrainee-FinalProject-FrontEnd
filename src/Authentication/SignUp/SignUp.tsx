@@ -23,7 +23,7 @@ const SignUp = ({navigation}: StackNavigationProps<Routes, "SignUp">) => {
           .min(4, 'Password length should be at least 4 characters'),
         passwordConfirm: Yup.string()
           .required('Confirm Password is required')
-          .oneOf([Yup.ref('password')], 'Passwords must and should match'),
+          .oneOf([Yup.ref('password')], 'Password does not match'),
       })
     
     const {
@@ -59,7 +59,6 @@ const SignUp = ({navigation}: StackNavigationProps<Routes, "SignUp">) => {
             <Controller
               control={control}
               name="email"
-              rules={emailRule}
               render={({ field: { onChange, value, onBlur } }) => {
                 return (
                   <TextInput
@@ -100,12 +99,11 @@ const SignUp = ({navigation}: StackNavigationProps<Routes, "SignUp">) => {
             <Controller
               control={control}
               name="passwordConfirm"
-              rules={passwordRule}
               render={({ field: { onChange, value, onBlur } }) => {
                 return (
                   <TextInput
                     icon="lock"
-                    placeholder="Enter your Password"
+                    placeholder="Please re-type your password"
                     secureTextEntry={true}
                     autoCapitalize="none"
                     onBlur={onBlur}
@@ -118,17 +116,10 @@ const SignUp = ({navigation}: StackNavigationProps<Routes, "SignUp">) => {
               }}
             />
     
-            <Box flexDirection="row" justifyContent="space-between">
-              <Checkbox label="Remeber me" />
-              <Button variant="transparent">
-                <Text color="primary">Forgot Password?</Text>
-              </Button>
-            </Box>
-    
             <Box alignItems="center" marginTop="m">
               <Button
                 variant="primary"
-                label="Log In"
+                label="Create Your Account"
                 onPress={handleSubmit(onSubmit)}
               />
             </Box>

@@ -38,7 +38,7 @@ const Welcome = ({navigation}: StackNavigationProps<Routes,"Login">) => {
             Login to your account below or signup for an amazing experience
           </Text>
           <Button variant="primary" label="Have an account? Login" onPress={() => navigation.navigate("Login")} />
-          <Button label="Join us, It's Free!" />
+          <Button label="Join us, It's Free!"  onPress={() => navigation.navigate("SignUp")} />
           <Button variant="transparent" label="Forgot Password?" />
         </Box>
       </Box>

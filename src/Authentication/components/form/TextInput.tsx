@@ -78,7 +78,7 @@ const TextInput = ({ icon, error, errorMessage, ...props }: TextInputProps) => {
           />
         </Box>
 
-        {props.value !== undefined && (
+        {(props.value !== undefined || error) && (
           <Box paddingHorizontal="m">
             <Box
               borderRadius="m"
