@@ -6,6 +6,7 @@ import Welcome from './Welcome';
 import Login from './Login';
 import SignUp from './SignUp';
 import ForgotPassword from './ForgotPassword';
+import PasswordChanged from './PasswordChanged';
 
 export {default as Onboarding} from "./Onboarding"
 export {default as Welcome} from "./Welcome"
@@ -49,6 +50,14 @@ export const AuthenticationNavigator = () => {
       <AuthenticationStack.Screen
         name="ForgotPassword"
         component={ForgotPassword}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <AuthenticationStack.Screen
+        name="PasswordChanged"
+        component={PasswordChanged}
         options={{
           headerShown: false,
         }}

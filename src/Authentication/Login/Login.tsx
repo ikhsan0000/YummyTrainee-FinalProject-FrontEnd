@@ -62,6 +62,7 @@ const Login = ({ navigation }: StackNavigationProps<Routes, "Login">) => {
                 icon="mail"
                 placeholder="Enter your Email"
                 autoCompleteType="email"
+                keyboardType="email-address"
                 autoCapitalize="none"
                 onBlur={onBlur}
                 value={value}
@@ -95,7 +96,7 @@ const Login = ({ navigation }: StackNavigationProps<Routes, "Login">) => {
 
         <Box flexDirection="row" justifyContent="space-between">
           <Checkbox label="Remeber me" />
-          <Button variant="transparent">
+          <Button variant="transparent" onPress={() => navigation.navigate("ForgotPassword")} >
             <Text color="primary">Forgot Password?</Text>
           </Button>
         </Box>

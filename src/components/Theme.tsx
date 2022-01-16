@@ -19,6 +19,7 @@ const theme = createTheme({
     mainBackground: palette.white,
     cardPrimaryBackground: palette.purplePrimary,
     primary: "#2CB9B0",
+    primaryLight: "#E7F9F7",
     secondary: '#0C0D34',
     white: '#FFFFFF',
     grey: "rgba(12, 13, 52, 0.05)",

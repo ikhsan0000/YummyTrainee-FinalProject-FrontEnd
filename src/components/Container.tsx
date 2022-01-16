@@ -21,52 +21,53 @@ interface ContainerProps {
 }
 
 const aspectRatio = 750 / 1125;
-const { width } = Dimensions.get("window");
+const { width, height: wHeight } = Dimensions.get("window");
 const height = width * aspectRatio;
 
 const Container = ({ children, footer }: ContainerProps) => {
   return (
-    <Box flex={1} backgroundColor="secondary">
-      <StatusBar barStyle="light-content" />
-      <Box backgroundColor="white">
-        <Box borderBottomLeftRadius="xl">
+    <KeyboardAwareScrollView scrollEnabled={false}>
+      <Box height={wHeight} backgroundColor="secondary">
+        <StatusBar barStyle="light-content" />
+        <Box backgroundColor="white">
+          <Box borderBottomLeftRadius="xl">
+            <Image
+              source={assets[0]}
+              style={{
+                width,
+                height: height * 0.41,
+                borderBottomLeftRadius: theme.borderRadii.xl,
+                overflow: "hidden",
+              }}
+            />
+          </Box>
+        </Box>
+
+        <Box flex={1}>
           <Image
             source={assets[0]}
             style={{
+              ...StyleSheet.absoluteFillObject,
               width,
-              height: height * 0.41,
-              borderBottomLeftRadius: theme.borderRadii.xl,
-              overflow: "hidden",
+              height,
             }}
           />
-        </Box>
-      </Box>
 
-      <Box flex={1}>
-        <Image
-          source={assets[0]}
-          style={{
-            ...StyleSheet.absoluteFillObject,
-            width,
-            height,
-          }}
-        />
-
-        <Box
-          flex={1}
-          borderRadius="xl"
-          borderTopLeftRadius={0}
-          backgroundColor="white"
-        >
-          <KeyboardAwareScrollView>{children}</KeyboardAwareScrollView>
+          <Box
+            flex={1}
+            borderRadius="xl"
+            borderTopLeftRadius={0}
+            backgroundColor="white"
+          >
+            {children}
+          </Box>
         </Box>
-      </Box>
-     
-   
+
         <Box backgroundColor="secondary" padding="l">
           {footer}
         </Box>
-    </Box>
+      </Box>
+    </KeyboardAwareScrollView>
   );
 };
 

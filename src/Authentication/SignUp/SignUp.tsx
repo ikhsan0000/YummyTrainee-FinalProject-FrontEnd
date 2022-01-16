@@ -65,6 +65,7 @@ const SignUp = ({navigation}: StackNavigationProps<Routes, "SignUp">) => {
                     icon="mail"
                     placeholder="Enter your Email"
                     autoCompleteType="email"
+                    keyboardType="email-address"
                     autoCapitalize="none"
                     onBlur={onBlur}
                     value={value}
