@@ -9,44 +9,14 @@ import {
 } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 
-const EMAIL_REGEX =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
 interface TextInputProps extends RNTextInputProps {
-  isEmail: boolean;
   icon: string;
+  error: any;
+  errorMessage: any;
 }
 
-const TextInput = ({ icon, isEmail, ...props }: TextInputProps) => {
-  // React Hook Form here
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isValid },
-  } = useForm({ mode: "onBlur" });
-
-  const onSubmit = (data) => {
-    console.log(data, "data");
-  };
-
-  const emailRule = {
-    required: {
-      value: true,
-      message: "Field is required",
-    },
-    pattern: {
-      value: EMAIL_REGEX,
-      message: "It's not a valid email",
-    },
-  };
-
-  const passwordRule = {
-    required: {
-      value: true,
-      message: "Field is required",
-    },
-  };
-
+const TextInput = ({ icon, error, errorMessage, ...props }: TextInputProps) => {
+  
   const SIZE = theme.borderRadii.m * 2;
 
   return (
@@ -63,10 +33,10 @@ const TextInput = ({ icon, isEmail, ...props }: TextInputProps) => {
           <Icon name={icon} size={20} color="#8A8D90" />
         </Box>
 
-        <Controller
+        {/* <Controller
           control={control}
-          name="email"
-          rules={isEmail ? emailRule : passwordRule}
+          name="input"
+          rules={rule}
           render={({ field: { onChange, value, onBlur } }) => {
             return (
               <>
@@ -87,21 +57,46 @@ const TextInput = ({ icon, isEmail, ...props }: TextInputProps) => {
                       borderRadius="m"
                       height={SIZE}
                       width={SIZE}
-                      backgroundColor={errors.email ? "danger" : "primary"}
+                      backgroundColor={errors.input ? "danger" : "primary"}
                       alignItems="center"
                       justifyContent="center"
                     >
-                      <Icon name={errors.email ? "x" : "check"} color="white" />
+                      <Icon name={errors.input ? "x" : "check"} color="white" />
                     </Box>
                   </Box>
                 )}
               </>
             );
           }}
-        />
+        /> */}
+
+        <Box flex={1}>
+          <RNTextInput
+            placeholderTextColor="#8A8D90"
+            underlineColorAndroid="transparent"
+            {...props}
+          />
+        </Box>
+
+        {props.value !== undefined && (
+          <Box paddingHorizontal="m">
+            <Box
+              borderRadius="m"
+              height={SIZE}
+              width={SIZE}
+              backgroundColor={error ? "danger" : "primary"}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Icon name={error ? "x" : "check"} color="white" />
+            </Box>
+          </Box>
+        )}
+
+
       </Box>
-      <Box marginTop="s">
-        {errors.email && <Text color="danger">*{errors.email.message}</Text> }
+      <Box marginBottom="s">
+        {error && <Text color="danger">*{errorMessage}</Text>}
       </Box>
     </>
   );
