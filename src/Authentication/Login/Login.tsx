@@ -44,7 +44,7 @@ const Login = ({ navigation }: StackNavigationProps<Routes, "Login">) => {
   );
 
   return (
-    <Container footer={footer}>
+    <Container pattern={2} footer={footer}>
       <Box padding="l">
         <Text variant="title1" textAlign="center" marginBottom="m">
           Welcome Back
@@ -93,6 +93,24 @@ const Login = ({ navigation }: StackNavigationProps<Routes, "Login">) => {
             );
           }}
         />
+
+        {/* <Controller
+          control={control}
+          name="rememberMe"
+          render={({ field: { onChange, value, onBlur } }) => {
+            return (
+              <Box flexDirection="row" justifyContent="space-between">
+                <Checkbox label="Remeber me" />
+                <Button
+                  variant="transparent"
+                  onPress={() => navigation.navigate("ForgotPassword")}
+                >
+                  <Text color="primary">Forgot Password?</Text>
+                </Button>
+              </Box>
+            );
+          }}
+        /> */}
 
         <Box flexDirection="row" justifyContent="space-between">
           <Checkbox label="Remeber me" />

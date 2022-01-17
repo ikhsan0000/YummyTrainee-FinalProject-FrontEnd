@@ -47,7 +47,7 @@ const SignUp = ({navigation}: StackNavigationProps<Routes, "SignUp">) => {
       );
     
       return (
-        <Container footer={footer}>
+        <Container pattern={1} footer={footer}>
           <Box padding="l">
             <Text variant="title1" textAlign="center" marginBottom="m">
               Create Account

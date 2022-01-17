@@ -39,7 +39,7 @@ const Welcome = ({navigation}: StackNavigationProps<Routes,"Login">) => {
           </Text>
           <Button variant="primary" label="Have an account? Login" onPress={() => navigation.navigate("Login")} />
           <Button label="Join us, It's Free!"  onPress={() => navigation.navigate("SignUp")} />
-          <Button variant="transparent" label="Forgot Password?" />
+          <Button variant="transparent" label="Forgot Password?"  onPress={() => navigation.navigate("ForgotPassword")}/>
         </Box>
       </Box>
     </Box>

@@ -8,6 +8,7 @@ import {
   TextInputProps as RNTextInputProps,
 } from "react-native";
 import { Controller, useForm } from "react-hook-form";
+import RoundedIcon from "../RoundedIcon";
 
 interface TextInputProps extends RNTextInputProps {
   icon: string;
@@ -79,18 +80,19 @@ const TextInput = ({ icon, error, errorMessage, ...props }: TextInputProps) => {
         </Box>
 
         {(props.value !== undefined || error) && (
-          <Box paddingHorizontal="m">
-            <Box
-              borderRadius="m"
-              height={SIZE}
-              width={SIZE}
-              backgroundColor={error ? "danger" : "primary"}
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Icon name={error ? "x" : "check"} color="white" />
-            </Box>
-          </Box>
+          // <Box paddingHorizontal="m">
+          //   <Box
+          //     borderRadius="m"
+          //     height={SIZE}
+          //     width={SIZE}
+          //     backgroundColor={error ? "danger" : "primary"}
+          //     alignItems="center"
+          //     justifyContent="center"
+          //   >
+          //     <Icon name={error ? "x" : "check"} color="white" />
+          //   </Box>
+          // </Box>
+          <RoundedIcon name={error ? "x" : "check"} color="white"  backgroundColor={error ? "danger" : "primary"} size={SIZE} />
         )}
 
 

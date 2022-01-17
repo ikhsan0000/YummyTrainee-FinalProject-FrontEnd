@@ -42,7 +42,7 @@ const ForgotPassword = ({
   );
 
   return (
-    <Container footer={footer}>
+    <Container pattern={0} footer={footer}>
       <Box padding="l" justifyContent="center" flex={1} style={{marginTop: -50}}>
         <Text variant="title1" textAlign="center" marginBottom="m">
           Forgot Password ?
