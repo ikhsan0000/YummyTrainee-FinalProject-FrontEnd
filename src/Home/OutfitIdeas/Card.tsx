@@ -1,37 +1,121 @@
 import React from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions, ImageRequireSource } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
-import Animated, { interpolateColor } from "react-native-reanimated";
-import { mix, mixColor } from "react-native-redash";
+import Animated, {
+  Extrapolate,
+  interpolate,
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+import { mix, mixColor, snapPoint } from "react-native-redash";
 import { Box } from "../../components/Theme";
 
 const { width: wWidth } = Dimensions.get("window");
 const width = wWidth * 0.7;
 const height = width * (425 / 294);
+const snapPoints = [-wWidth, 0, wWidth];
 
 interface CardProps {
-  position: Animated.Adaptable<number>;
+  step: number;
+  index: number;
+  aIndex: Animated.SharedValue<number>;
+  source: ImageRequireSource;
+  onSwipe: any;
 }
 
-const Card = ({ position }: CardProps) => {
-    const backgroundColor = mixColor(position, "#C9E9E7", "#74BCB8");
-  const translateY = mix(position, 0, -50);
-  const scale = mix(position, 1, 0.9);
+const Card = ({ source, step, index, aIndex, onSwipe }: CardProps) => {
+  const position = useDerivedValue(() => index * step - aIndex.value);
+
+  const translateY = useSharedValue(0);
+  const translateX = useSharedValue(0);
+
+  const onGestureEvent = useAnimatedGestureHandler<{ x: number; y: number }>({
+    onStart: (_, ctx) => {
+      ctx.x = translateX.value;
+      ctx.y = translateY.value;
+    },
+    onActive: ({ translationX, translationY }, ctx) => {
+      translateX.value = translationX + ctx.x;
+      translateY.value = translationY + ctx.y;
+    },
+    onEnd: ({ velocityX, velocityY }) => {
+      translateY.value = withSpring(0, {
+        velocity: velocityY,
+      });
+      const dest = snapPoint(translateX.value, velocityX, snapPoints);
+      translateX.value = withSpring(
+        dest,
+        {
+          overshootClamping: dest === 0 ? false : true,
+          restSpeedThreshold: dest === 0 ? 0.01 : 100,
+          restDisplacementThreshold: dest === 0 ? 0.01 : 100,
+        },
+        // () => dest !== 0 && onSwipe()
+      );
+    },
+  });
+  const imageStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        scale: interpolate(
+          position.value,
+          [0, step],
+          [1.1, 1],
+          Extrapolate.CLAMP
+        ),
+      },
+    ],
+  }));
+
+  const cardStyle = useAnimatedStyle(() => {
+    const scale = mix(position.value, 1, 0.9);
+    return {
+      transform: [
+        { translateX: translateX.value },
+        { translateY: translateY.value },
+        { scale },
+      ],
+      backgroundColor: mixColor(position.value, "#C9E9E7", "#74BCB8"),
+    };
+  });
+
   return (
     <Box
       style={StyleSheet.absoluteFill}
       justifyContent="center"
       alignItems="center"
     >
-      <Animated.View
-        style={{
-          backgroundColor,
-          width,
-          height,
-          borderRadius: 20,
-          transform: [{ translateY }, { scale }],
-        }}
-      />
+      <PanGestureHandler onGestureEvent={onGestureEvent}>
+        <Animated.View
+          style={[
+            {
+              width,
+              height,
+              borderRadius: 20,
+              overflow:"hidden"
+            },
+            cardStyle,
+          ]}
+        >
+
+          <Animated.Image
+            source={source}
+            style={[
+              {
+                ...StyleSheet.absoluteFillObject,
+                width: undefined,
+                height: undefined,
+              },
+              imageStyle,
+            ]}
+          />
+
+        </Animated.View>
+        
+      </PanGestureHandler>
     </Box>
   );
 };
