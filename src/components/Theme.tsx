@@ -22,8 +22,8 @@ const theme = createTheme({
     primaryLight: "#E7F9F7",
     secondary: '#0C0D34',
     white: '#FFFFFF',
-    grey: "rgba(12, 13, 52, 0.05)",
-    lightGrey: "#F4F0EF",
+    grey: "#F4F0EF",
+    lightGrey: "#FAFAFA",
     darkGrey: "#8A8D90",
     danger: "#FF0058",
     body: "rgba(12, 13, 52, 0.7)",
@@ -31,7 +31,8 @@ const theme = createTheme({
     orange:"#FE5E33",
     yellow:"#FFC641",
     pink:"#FF87A2",
-    violet:"#442CB9"
+    violet:"#442CB9",
+    lightBlue:"#BFEAF5"
 
   },
   spacing: {
@@ -78,6 +79,12 @@ const theme = createTheme({
     button: {
         fontFamily: "SFProDisplay-Medium",
         fontSize: 15,
+    },
+    header: {
+      fontSize: 12,
+      fontFamily: "SFProDisplay-Semibold",
+      lineHeight: 24,
+      color: "secondary",
     }
 
 

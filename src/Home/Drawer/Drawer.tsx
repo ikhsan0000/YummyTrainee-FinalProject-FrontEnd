@@ -1,9 +1,8 @@
-import { DrawerContentComponentProps } from "@react-navigation/drawer";
+import { DrawerActions } from "@react-navigation/native";
 import React from "react";
 import { Image, Dimensions, StyleSheet } from "react-native";
-import { RectButton } from "react-native-gesture-handler";
-import RoundedIcon from "../../../Authentication/components/RoundedIcon";
-import theme, { Box, Text } from "../../../components/Theme";
+import { Header } from "../../components";
+import theme, { Box, Text } from "../../components/Theme";
 import DrawerItem, { DrawerItemProps } from "./DrawerItem";
 
 const aspectRatio = 750 / 1125;
@@ -52,11 +51,10 @@ const items: DrawerItemProps[] = [
 
 interface DrawerProps {}
 
-const Drawer = (props: DrawerContentComponentProps) => {
+const Drawer = ({navigation}: any) => {
   return (
     <Box flex={1}>
       <Box flex={0.15} backgroundColor="white">
-        
         <Box
           position="absolute"
           top={0}
@@ -65,34 +63,14 @@ const Drawer = (props: DrawerContentComponentProps) => {
           left={0}
           borderBottomRightRadius="xl"
           backgroundColor="secondary"
-          flexDirection="row"
-          justifyContent="space-between"
-          paddingTop="m"
         >
-         
-          <RectButton rippleColor="rgba(0,0,0,0)">
-            <RoundedIcon
-              name="x"
-              color="white"
-              backgroundColor="secondary"
-              size={30}
-              iconRatio={0.7}
-            ></RoundedIcon>
-          </RectButton>
-
-          <Text color="white" >MY PROFILE</Text>
-
-          <RectButton rippleColor="rgba(0,0,0,0)">
-            <RoundedIcon
-              name="shopping-bag"
-              color="white"
-              backgroundColor="secondary"
-              size={30}
-              iconRatio={0.7}
-            ></RoundedIcon>
-          </RectButton>
+          <Header
+            title="my profile"
+            left={{ icon: "x", onPress: () => navigation.dispatch(DrawerActions.closeDrawer()) }}
+            right={{ icon: "shopping-bag", onPress: () => true }}
+            dark
+          />
         </Box>
-
       </Box>
 
       <Box flex={0.85}>
@@ -100,7 +78,7 @@ const Drawer = (props: DrawerContentComponentProps) => {
 
         <Box flex={1} backgroundColor="primary">
           <Image
-            source={require("../../../components/assets/patterns/1.png")}
+            source={require("../../components/assets/patterns/1.png")}
             style={{
               ...StyleSheet.absoluteFillObject,
               width: undefined,
@@ -149,7 +127,7 @@ const Drawer = (props: DrawerContentComponentProps) => {
 
       <Box backgroundColor="white" width={DRAWER_WIDTH} height={height * 0.41}>
         <Image
-          source={require("../../../components/assets/patterns/1.png")}
+          source={require("../../components/assets/patterns/1.png")}
           style={{
             width: DRAWER_WIDTH,
             height,

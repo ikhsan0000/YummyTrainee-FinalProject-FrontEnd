@@ -1,9 +1,7 @@
 import React from "react";
-import { View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-import { color } from "react-native-reanimated";
-import RoundedIcon from "../../../Authentication/components/RoundedIcon";
-import theme, { Box, Theme, Text } from "../../../components/Theme";
+import RoundedIcon from "../../Authentication/components/RoundedIcon";
+import theme, { Box, Theme, Text } from "../../components/Theme";
 
 interface DrawerItemProps {
   icon: string;
