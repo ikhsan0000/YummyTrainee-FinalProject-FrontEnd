@@ -1,7 +1,11 @@
 import React from "react";
 import { Alert } from "react-native";
 import { Container, Button, Text } from "../../components";
-import { Routes, StackNavigationProps } from "../../components/Navigation";
+import {
+  AuthenticationRoutes,
+  AuthNavigationProps,
+  StackNavigationProps,
+} from "../../components/Navigation";
 import Footer from "../components/Footer";
 
 import { Controller, useForm } from "react-hook-form";
@@ -10,9 +14,7 @@ import * as Yup from "yup";
 import { Box } from "../../components/Theme";
 import TextInput from "../components/form/TextInput";
 
-const ForgotPassword = ({
-  navigation,
-}: StackNavigationProps<Routes, "ForgotPassword">) => {
+const ForgotPassword = ({ navigation }: AuthNavigationProps<"ForgotPassword">) => {
   // YUP
   const formSchema = Yup.object().shape({
     email: Yup.string()
@@ -25,7 +27,7 @@ const ForgotPassword = ({
     control,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm({ mode: "onBlur", resolver: yupResolver(formSchema) });
+  } = useForm({ mode: "onChange", resolver: yupResolver(formSchema) });
 
   const onSubmit = (data: any) => {
     console.log(data);
@@ -36,14 +38,19 @@ const ForgotPassword = ({
       title="Don't work?"
       action="Try another way"
       onPress={() => {
-        Alert.alert('Lorem Ipsum');
+        Alert.alert("Lorem Ipsum");
       }}
     />
   );
 
   return (
     <Container pattern={0} footer={footer}>
-      <Box padding="l" justifyContent="center" flex={1} style={{marginTop: -50}}>
+      <Box
+        padding="l"
+        justifyContent="center"
+        flex={1}
+        style={{ marginTop: -50 }}
+      >
         <Text variant="title1" textAlign="center" marginBottom="m">
           Forgot Password ?
         </Text>

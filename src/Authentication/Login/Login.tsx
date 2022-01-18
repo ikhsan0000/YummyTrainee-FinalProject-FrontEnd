@@ -3,15 +3,20 @@ import { Controller, useForm } from "react-hook-form";
 import { Alert, View } from "react-native";
 
 import { Button, Container, Text } from "../../components";
-import { Routes, StackNavigationProps } from "../../components/Navigation";
+import { AppRoutes, AuthenticationRoutes, AuthNavigationProps } from "../../components/Navigation";
 import { Box } from "../../components/Theme";
 import Footer from "../components/Footer";
 import Checkbox from "../components/form/Checkbox";
 import TextInput from "../components/form/TextInput";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import { BorderlessButton } from "react-native-gesture-handler";
+import { CompositeNavigationProp } from "@react-navigation/native";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-const Login = ({ navigation }: StackNavigationProps<Routes, "Login">) => {
+
+const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
   // YUP
   const formSchema = Yup.object().shape({
     email: Yup.string()
@@ -27,10 +32,11 @@ const Login = ({ navigation }: StackNavigationProps<Routes, "Login">) => {
     control,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm({ mode: "onBlur", resolver: yupResolver(formSchema) });
+  } = useForm({ mode: "onChange", resolver: yupResolver(formSchema) });
 
   const onSubmit = (data: any) => {
     console.log(data);
+    navigation.navigate("Home");
   };
 
   const footer = (
@@ -112,11 +118,18 @@ const Login = ({ navigation }: StackNavigationProps<Routes, "Login">) => {
           }}
         /> */}
 
-        <Box flexDirection="row" justifyContent="space-between">
+        <Box
+          flexDirection="row"
+          justifyContent="space-between"
+          paddingVertical="m"
+        >
           <Checkbox label="Remeber me" />
-          <Button variant="transparent" onPress={() => navigation.navigate("ForgotPassword")} >
+          <BorderlessButton
+            rippleColor="rgba(0,0,0,0)"
+            onPress={() => navigation.navigate("ForgotPassword")}
+          >
             <Text color="primary">Forgot Password?</Text>
-          </Button>
+          </BorderlessButton>
         </Box>
 
         <Box alignItems="center" marginTop="m">

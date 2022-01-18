@@ -28,6 +28,11 @@ const theme = createTheme({
     danger: "#FF0058",
     body: "rgba(12, 13, 52, 0.7)",
 
+    orange:"#FE5E33",
+    yellow:"#FFC641",
+    pink:"#FF87A2",
+    violet:"#442CB9"
+
   },
   spacing: {
     s: 8,

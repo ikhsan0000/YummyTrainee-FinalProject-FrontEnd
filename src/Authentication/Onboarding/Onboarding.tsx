@@ -1,16 +1,19 @@
 import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
-import Slide, { SLIDER_HEIGHT } from "./Slide";
 import Animated, {
   interpolateColor,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
+
+import Slide, { SLIDER_HEIGHT } from "./Slide";
 import Subslide from "./Subslide";
 import Dot from "./Dot";
+
 import { theme } from "../../components";
-import { StackNavigationProps } from "../../components/Navigation";
+import { AuthNavigationProps } from "../../components/Navigation";
+
 const { width } = Dimensions.get("window");
 const slides = [
   {
@@ -39,7 +42,7 @@ const slides = [
   },
 ];
 
-const Onboarding = ({ navigation }: StackNavigationProps<Routes, "Onboarding">) => {
+const Onboarding = ({ navigation }: AuthNavigationProps<"Onboarding">) => {
   const scroll = React.createRef();
   const x = useSharedValue(0);
 
@@ -63,7 +66,6 @@ const Onboarding = ({ navigation }: StackNavigationProps<Routes, "Onboarding">) 
       x.value = e.contentOffset.x;
     },
   });
-
 
 
   return (

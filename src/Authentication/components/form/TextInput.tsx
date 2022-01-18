@@ -92,7 +92,7 @@ const TextInput = ({ icon, error, errorMessage, ...props }: TextInputProps) => {
           //     <Icon name={error ? "x" : "check"} color="white" />
           //   </Box>
           // </Box>
-          <RoundedIcon name={error ? "x" : "check"} color="white"  backgroundColor={error ? "danger" : "primary"} size={SIZE} />
+          <RoundedIcon name={error ? "x" : "check"} color="white"  backgroundColor={error ? "danger" : "primary"} size={SIZE} iconRatio={0.6} />
         )}
 
 

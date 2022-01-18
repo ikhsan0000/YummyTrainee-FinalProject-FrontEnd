@@ -1,18 +1,19 @@
 import React from "react";
 import { View } from "react-native";
 import { Button, Container, Text } from "../../components";
-import { Routes, StackNavigationProps } from "../../components/Navigation";
+import { AuthenticationRoutes, StackNavigationProps } from "../../components/Navigation";
 import { Box } from "../../components/Theme";
 import { Feather as Icon } from "@expo/vector-icons";
 import FooterCloseButton from "../components/FooterCloseButton";
+import RoundedIcon from "../components/RoundedIcon";
 
 const SIZE = 80;
 
 const PasswordChanged = ({
   navigation,
-}: StackNavigationProps<Routes, "PasswordChanged">) => {
+}: StackNavigationProps<AuthenticationRoutes, "PasswordChanged">) => {
   return (
-    <Container patter={1}
+    <Container pattern={1}
       footer={
         <Box flexDirection="row" justifyContent="center" padding="s">
           <FooterCloseButton onPress={() => navigation.pop()} />
@@ -26,7 +27,7 @@ const PasswordChanged = ({
         paddingHorizontal="xl"
         style={{ marginTop: -30 }}
       >
-        <Box
+        {/* <Box
           backgroundColor="primaryLight"
           justifyContent="center"
           marginBottom="xl"
@@ -35,7 +36,9 @@ const PasswordChanged = ({
           <Text color="primary" textAlign="center">
             <Icon name="check" size={32} />
           </Text>
-        </Box>
+        </Box> */}
+
+        <RoundedIcon name="check" size={SIZE} backgroundColor="primaryLight" color="primary" iconRatio={0.5} />
         <Text variant="title1" textAlign="center" marginBottom="m">
           Your password has successfully changed
         </Text>
