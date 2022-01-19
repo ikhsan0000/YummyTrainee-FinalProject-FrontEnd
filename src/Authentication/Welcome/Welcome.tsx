@@ -11,7 +11,7 @@ const Welcome = ({ navigation }: AuthNavigationProps<"Welcome">) => {
       <Box
         flex={1}
         borderBottomRightRadius="xl"
-        backgroundColor="lightGrey"
+        backgroundColor="grey"
         justifyContent="center"
       >
         <Text variant="hero">Welcome</Text>
