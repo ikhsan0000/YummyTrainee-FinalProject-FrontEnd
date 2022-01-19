@@ -1,40 +1,32 @@
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import React from "react";
 import { Box, Text } from "../../components/Theme";
 import { Header } from "../../components";
 import { HomeNavigationProps } from "../../components/Navigation";
 import Graph, { DataPoint } from "./Graph/Graph";
+import Transaction from "./Transaction";
+
+const startDate = new Date("2019-01-01").getTime()
+const numberOfMonths = 6
 
 const data: DataPoint[] = [
   {
-    date: new Date("2019-10-01").getTime(),
-    value: 0,
-    color: "primary"
-  },
-  {
-    date: new Date("2019-11-01").getTime(),
-    value: 0,
-    color: "primary"
-  },
-  {
-    date: new Date("2019-12-01").getTime(),
+    date: new Date("2019-02-01").getTime(),
     value: 139.42,
-    color: "primary"
+    color: "primary",
+    id: 254156
   },
   {
-    date: new Date("2020-01-01").getTime(),
-    value: 0,
-    color: "primary"
-  },
-  {
-    date: new Date("2020-02-01").getTime(),
+    date: new Date("2019-04-01").getTime(),
     value: 281.23,
-    color: "danger"
+    color: "danger",
+    id: 254157
   },
   {
-    date: new Date("2020-03-01").getTime(),
+    date: new Date("2019-05-01").getTime(),
     value: 198.54,
-    color: "violet"
+    color: "violet",
+    id: 254158
   },
 ];
 
@@ -48,7 +40,7 @@ const TransactionHistory = ({
         left={{ icon: "menu", onPress: () => navigation.openDrawer() }}
         right={{ icon: "share", onPress: () => true }}
       />
-      <Box padding="m">
+      <Box padding="m" flex={1}>
         <Box
           flexDirection="row"
           justifyContent="space-between"
@@ -65,7 +57,13 @@ const TransactionHistory = ({
           </Box>
         </Box>
 
-        <Graph data={data} />
+        <Graph data={data} startDate={startDate} numberOfMonths={numberOfMonths} />
+        <ScrollView>
+          {data.map((transaction) => (
+            <Transaction key={transaction.id} transaction={transaction} />
+          ))}
+        </ScrollView>
+
       </Box>
     </Box>
   );

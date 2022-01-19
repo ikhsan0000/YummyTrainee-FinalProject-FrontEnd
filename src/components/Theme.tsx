@@ -70,6 +70,11 @@ const theme = createTheme({
         fontFamily: "SFProDisplay-Semibold",
         color: "secondary"
     },
+    title3: {
+        fontSize: 16,
+        fontFamily: "SFProDisplay-Semibold",
+        color: "secondary"
+    },
     body: {
         fontSize: 16,
         lineHeight: 24,
