@@ -3,7 +3,11 @@ import { Controller, useForm } from "react-hook-form";
 import { Alert, View } from "react-native";
 
 import { Button, Container, Text } from "../../components";
-import { AppRoutes, AuthenticationRoutes, AuthNavigationProps } from "../../components/Navigation";
+import {
+  AppRoutes,
+  AuthenticationRoutes,
+  AuthNavigationProps,
+} from "../../components/Navigation";
 import { Box } from "../../components/Theme";
 import Footer from "../components/Footer";
 import Checkbox from "../components/form/Checkbox";
@@ -11,10 +15,12 @@ import TextInput from "../components/form/TextInput";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { BorderlessButton } from "react-native-gesture-handler";
-import { CompositeNavigationProp } from "@react-navigation/native";
+import {
+  CommonActions,
+  CompositeNavigationProp,
+} from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { StackNavigationProp } from "@react-navigation/stack";
-
 
 const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
   // YUP
@@ -35,8 +41,14 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
   } = useForm({ mode: "onChange", resolver: yupResolver(formSchema) });
 
   const onSubmit = (data: any) => {
-    console.log(data);
-    navigation.navigate("Home");
+    console.log(data)
+
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: "Home" }],
+      })
+    );
   };
 
   const footer = (

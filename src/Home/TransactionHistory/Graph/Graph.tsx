@@ -1,11 +1,17 @@
 import { Dimensions, View } from "react-native";
-import React from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { useTheme } from "@shopify/restyle";
 import { Box, Theme } from "../../../components/Theme";
 import Underlay, { MARGIN } from "./Underlay";
 import { lerp } from "./Scale";
+import moment from "moment";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+
 const { width: wWidth } = Dimensions.get("window");
 const aspectRatio = 195 / 305;
+
+const AnimatedBox = Animated.createAnimatedComponent(Box);
 
 export interface DataPoint {
   date: number;
@@ -23,6 +29,13 @@ interface GraphProps {
 const Graph = ({ data, startDate, numberOfMonths }: GraphProps) => {
   const theme = useTheme();
 
+  //transition
+  const transition = useSharedValue(0);
+  useFocusEffect(() => {
+    transition.value = withTiming(1, { duration: 700 });
+    return () => (transition.value = 0);
+  });
+
   const canvasWidth = wWidth - theme.spacing.m * 2;
   const canvasHight = canvasWidth * aspectRatio;
   const width = canvasWidth - theme.spacing[MARGIN];
@@ -35,6 +48,7 @@ const Graph = ({ data, startDate, numberOfMonths }: GraphProps) => {
   const minY = Math.min(...values);
   const maxY = Math.max(...values);
 
+
   return (
     <Box paddingBottom={MARGIN} paddingLeft={MARGIN} marginTop="xl">
       <Underlay
@@ -45,19 +59,36 @@ const Graph = ({ data, startDate, numberOfMonths }: GraphProps) => {
         numberOfMonths={numberOfMonths}
         step={step}
       />
-      <Box width={width} height={height}>
+      <View
+        style={{ width, height, overflow: 'hidden'}}
+      >
         {data.map((point) => {
-          // need fix
-          const i = new Date(point.date - startDate).getMonth();
+          const i = Math.round(
+            moment.duration(moment(point.date).diff(startDate)).asMonths()
+          );
+          
+          const totalHeight = lerp(0, height, point.value / maxY)
+          
+          const animatedGraph = useAnimatedStyle(() => {
+            const currentHeight = totalHeight * transition.value
+            const translateY = (totalHeight - currentHeight) / 2
+
+            return { 
+              transform : [{translateY}, {scaleY: transition.value}],
+              opacity : transition.value
+            }
+            
+            })
 
           return (
-            <Box
+            <AnimatedBox
               key={point.date}
               position="absolute"
               left={i * step}
               bottom={0}
               width={step}
-              height={lerp(0, height, point.value / maxY)}
+              height={totalHeight}
+              style={animatedGraph}
             >
               <View
                 style={{
@@ -83,10 +114,10 @@ const Graph = ({ data, startDate, numberOfMonths }: GraphProps) => {
                   borderRadius: theme.borderRadii.m,
                 }}
               />
-            </Box>
+            </AnimatedBox>
           );
         })}
-      </Box>
+      </View>
     </Box>
   );
 };

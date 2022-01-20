@@ -10,7 +10,7 @@ interface HeaderProps {
     onPress: () => void;
   };
   title: string;
-  right: {
+  right?: {
     icon: string;
     onPress: () => void;
   };
@@ -35,6 +35,7 @@ const Header = ({left, title, right, dark}:HeaderProps) => {
 
       <Text variant="header" color={color}>{title.toUpperCase()}</Text>
 
+      {right ? (
       <RectButton rippleColor="rgba(0,0,0,0)" onPress={right.onPress}>
         <RoundedIcon
           name={right.icon}
@@ -43,7 +44,10 @@ const Header = ({left, title, right, dark}:HeaderProps) => {
           size={40}
           iconRatio={0.5}
         ></RoundedIcon>
-      </RectButton>
+      </RectButton>) : (
+          <View style={{width: 70}} />
+      )
+      }
     </Box>
   );
 };
