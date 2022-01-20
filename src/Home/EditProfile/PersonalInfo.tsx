@@ -111,8 +111,21 @@ const PersonalInfo = () => {
           }}
         />
       </Box>
+          <Controller
+          control={control}
+          name="gender"
+          render={ ({ field: {onChange, value, onBlur} }) => {
+            const changeGender = (data) => onChange(data)
+            return (
+              <CheckboxGroup options={genders} radio hookFormData={changeGender}/>
 
-      <CheckboxGroup options={genders} radio />
+            )
+          }
+
+          }
+           />
+    
+      {/* <CheckboxGroup options={genders} radio /> */}
 
       <Box alignItems="center" marginTop="l">
           <Button

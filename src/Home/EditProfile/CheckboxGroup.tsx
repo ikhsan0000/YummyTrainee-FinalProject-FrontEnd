@@ -6,9 +6,10 @@ import { Button } from "../../components";
 interface CheckboxGroupProps {
   options: { value: string; label: string }[];
   radio?: boolean;
+  hookFormData?: any
 }
 
-const CheckboxGroup = ({ options, radio }: CheckboxGroupProps) => {
+const CheckboxGroup = ({ options, radio, hookFormData }: CheckboxGroupProps) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
   return (
@@ -23,6 +24,7 @@ const CheckboxGroup = ({ options, radio }: CheckboxGroupProps) => {
             onPress={() => {
               if (radio) {
                 setSelectedValues([value]);
+                hookFormData && hookFormData(value);
               } else {
                 if (isSelected) {
                   selectedValues.splice(index, 1);
