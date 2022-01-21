@@ -45,7 +45,7 @@ const FavouriteOutfits = ({
       <Header
         title="favourite outfits"
         left={{ icon: "menu", onPress: () => navigation.openDrawer() }}
-        right={{ icon: "shopping-bag", onPress: () => true }}
+        right={{ icon: "shopping-cart", onPress: () => navigation.navigate("Cart") }}
       />
 
       <Box flex={1}>

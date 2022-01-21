@@ -27,6 +27,7 @@ const theme = createTheme({
     darkGrey: "#8A8D90",
     danger: "#FF0058",
     body: "rgba(12, 13, 52, 0.7)",
+    transparent: "rgba(0, 0, 0, 0)",
 
     orange:"#FE5E33",
     yellow:"#FFC641",

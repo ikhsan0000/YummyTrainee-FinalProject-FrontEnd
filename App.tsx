@@ -1,5 +1,4 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, StatusBar } from "react-native";
 import * as React from "react";
 import { AuthenticationNavigator } from "./src/Authentication";
 import { HomeNavigator } from "./src/Home";
@@ -25,6 +24,8 @@ export default function App() {
   return (
     <ThemeProvider {...{ theme }}>
       <LoadAssets {...{ fonts }}>
+      <StatusBar barStyle="light-content"/>
+
         <AppStack.Navigator>
           <AppStack.Screen
             name="Authentication"

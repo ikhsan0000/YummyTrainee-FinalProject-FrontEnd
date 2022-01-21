@@ -15,11 +15,12 @@ interface HeaderProps {
     onPress: () => void;
   };
   dark: boolean;
+  transparent?: boolean;
 }
 
-const Header = ({left, title, right, dark}:HeaderProps) => {
-  const color = dark ? "white" : "secondary"
-  const backgroundColor = dark ? "secondary" : "lightGrey"
+const Header = ({left, title, right, dark, transparent}:HeaderProps) => {
+  const color = dark ? "white" : (transparent ? "white" : "secondary")
+  const backgroundColor = dark ? "secondary" : (transparent ? "transparent" : "lightGrey")
   
     return (
     <Box flexDirection="row" justifyContent="space-between" marginTop="m" alignItems="center">

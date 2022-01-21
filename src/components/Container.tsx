@@ -35,7 +35,6 @@ const Container = ({ children, footer, pattern}: ContainerProps) => {
   return (
     <KeyboardAwareScrollView scrollEnabled={false}>
       <Box height={wHeight} backgroundColor="secondary">
-        <StatusBar barStyle="light-content" />
         <Box backgroundColor="white">
           <Box borderBottomLeftRadius="xl">
             <Image

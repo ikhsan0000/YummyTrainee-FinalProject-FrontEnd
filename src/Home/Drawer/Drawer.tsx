@@ -69,7 +69,7 @@ const Drawer = ({navigation}: any) => {
           <Header
             title="my profile"
             left={{ icon: "x", onPress: () => navigation.dispatch(DrawerActions.closeDrawer()) }}
-            right={{ icon: "shopping-bag", onPress: () => true }}
+            right={{ icon: "shopping-cart", onPress: () => navigation.navigate("Cart") }}
             dark
           />
         </Box>
