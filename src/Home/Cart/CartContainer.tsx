@@ -1,5 +1,5 @@
 import { View, StyleSheet, Dimensions } from "react-native";
-import React, { ReactNode } from "react";
+import React, { FC, ReactNode } from "react";
 import { Box, Text } from "../../components/Theme";
 import Animated, {
   useAnimatedGestureHandler,
@@ -19,9 +19,10 @@ const snapPoints = [-(height - minHeight), 0];
 
 interface CartContainerProps {
   children: ReactNode;
+  CheckoutComponent: FC<{minHeight: number}>;
 }
 
-const CartContainer = ({ children }) => {
+const CartContainer = ({ children, CheckoutComponent }) => {
   const theme = useTheme();
   const translateY = useSharedValue(0);
   const onGestureEvent = useAnimatedGestureHandler({
@@ -46,7 +47,8 @@ const CartContainer = ({ children }) => {
   }));
 
   return (
-    <Box flex={1} backgroundColor="secondary">
+    <Box flex={1} >
+      <CheckoutComponent minHeight={minHeight}/>
       <PanGestureHandler onGestureEvent={onGestureEvent}>
         <Animated.View
           style={[
@@ -59,7 +61,8 @@ const CartContainer = ({ children }) => {
               backgroundColor: "white",
               borderBottomLeftRadius: theme.borderRadii.xl,
               borderBottomRightRadius: theme.borderRadii.xl,
-              overflow: "hidden"
+              overflow: "hidden",
+              paddingBottom: theme.spacing.xl
             },
             animatedSlide,
           ]}
@@ -88,6 +91,7 @@ const CartContainer = ({ children }) => {
           </View>
         </Animated.View>
       </PanGestureHandler>
+
     </Box>
   );
 };

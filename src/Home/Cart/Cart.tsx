@@ -7,6 +7,7 @@ import { HomeNavigationProps } from "../../components/Navigation";
 import Item from "./Item";
 import Svg, { Path } from "react-native-svg";
 import { useTheme } from "@shopify/restyle";
+import Checkout from "./Checkout";
 
 const { width } = Dimensions.get("window");
 const aspectRatio = width / 375;
@@ -20,7 +21,7 @@ const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
   const [items, setItems] = useState(defaultItems);
 
   return (
-    <CartContainer>
+    <CartContainer CheckoutComponent={Checkout}>
       <Box backgroundColor="primary">
         <Header
           title="shopping cart"

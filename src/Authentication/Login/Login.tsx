@@ -41,7 +41,7 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
   } = useForm({ mode: "onChange", resolver: yupResolver(formSchema) });
 
   const onSubmit = (data: any) => {
-    console.log(data)
+    console.log(data);
 
     navigation.dispatch(
       CommonActions.reset({
@@ -112,25 +112,31 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
           }}
         />
 
-        {/* <Controller
+        <Controller
           control={control}
           name="rememberMe"
           render={({ field: { onChange, value, onBlur } }) => {
+            const rememberMe = (data:boolean) => onChange(data)
             return (
-              <Box flexDirection="row" justifyContent="space-between">
-                <Checkbox label="Remeber me" />
-                <Button
-                  variant="transparent"
+              <Box
+                flexDirection="row"
+                justifyContent="space-between"
+                paddingVertical="m"
+              >
+                <Checkbox label="Remeber me" hookFormData={rememberMe} />
+
+                <BorderlessButton
+                  rippleColor="rgba(0,0,0,0)"
                   onPress={() => navigation.navigate("ForgotPassword")}
                 >
                   <Text color="primary">Forgot Password?</Text>
-                </Button>
+                </BorderlessButton>
               </Box>
             );
           }}
-        /> */}
+        />
 
-        <Box
+        {/* <Box
           flexDirection="row"
           justifyContent="space-between"
           paddingVertical="m"
@@ -142,7 +148,7 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
           >
             <Text color="primary">Forgot Password?</Text>
           </BorderlessButton>
-        </Box>
+        </Box> */}
 
         <Box alignItems="center" marginTop="m">
           <Button
