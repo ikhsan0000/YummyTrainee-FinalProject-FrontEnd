@@ -21,6 +21,7 @@ import {
 } from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { StackNavigationProp } from "@react-navigation/stack";
+import axios from "axios";
 
 const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
   // YUP
@@ -40,8 +41,27 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
     formState: { errors, isValid },
   } = useForm({ mode: "onChange", resolver: yupResolver(formSchema) });
 
-  const onSubmit = (data: any) => {
+  // Submit handler
+  const onSubmit = async (data: any) => {
     console.log(data);
+
+    // const formattedData = JSON.stringify({
+    //   email: data.email,
+    //   password: data.password,
+    // });
+
+    // axios({
+    //   method: 'post',
+    //   url: 'http://192.168.0.172:3000/auth/local/login',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   data : formattedData
+    // }).then((data) => {
+    //   console.log(data)
+    // }).catch((error) => {
+    //   console.log(error)
+    // });
 
     navigation.dispatch(
       CommonActions.reset({
@@ -116,7 +136,7 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
           control={control}
           name="rememberMe"
           render={({ field: { onChange, value, onBlur } }) => {
-            const rememberMe = (data:boolean) => onChange(data)
+            const rememberMe = (data: boolean) => onChange(data);
             return (
               <Box
                 flexDirection="row"
