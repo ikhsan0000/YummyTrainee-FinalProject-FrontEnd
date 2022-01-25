@@ -1,4 +1,4 @@
-import { CommonActions, DrawerActions } from "@react-navigation/native";
+import { CommonActions, DrawerActions, useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Image, Dimensions, StyleSheet } from "react-native";
 import { Header } from "../../components";
@@ -44,7 +44,7 @@ const items: DrawerItemProps[] = [
   {
     icon: "log-out",
     label: "Logout",
-    onPress: (navigation) => navigation.dispatch(CommonActions.reset({
+    onPress: (navigation:any) => navigation.dispatch(CommonActions.reset({
       index: 0,
       routes: [{name: 'Authentication'}]
     })) ,
@@ -53,7 +53,8 @@ const items: DrawerItemProps[] = [
 ];
 
 
-const Drawer = ({navigation}: any) => {
+const Drawer = () => {
+  const navigation = useNavigation();
   return (
     <Box flex={1}>
       <Box flex={0.15} backgroundColor="white">
@@ -120,8 +121,8 @@ const Drawer = ({navigation}: any) => {
               ikhsanfirdauz000@gmail.com
             </Text>
 
-            {items.map((item) => (
-              <DrawerItem key={item.screen} {...item} />
+            {items.map((item, index) => (
+              <DrawerItem key={index} {...item} />
             ))}
           </Box>
         </Box>

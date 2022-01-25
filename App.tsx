@@ -9,6 +9,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { AppRoutes } from "./src/components/Navigation";
+import { AuthContextProvider } from "./src/services/authentication/auth.context";
 
 const fonts = {
   "SFProDisplay-Bold": require("./assets/fonts/SF-Pro-Display-Bold.otf"),
@@ -17,31 +18,33 @@ const fonts = {
   "SFProDisplay-Medium": require("./assets/fonts/SF-Pro-Display-Medium.otf"),
 };
 
-
 const AppStack = createStackNavigator<AppRoutes>();
 
 export default function App() {
   return (
     <ThemeProvider {...{ theme }}>
       <LoadAssets {...{ fonts }}>
-      <StatusBar barStyle="light-content"/>
+        <StatusBar barStyle="light-content" />
 
-        <AppStack.Navigator>
-          <AppStack.Screen
-            name="Authentication"
-            component={AuthenticationNavigator}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <AppStack.Screen
-            name="Home"
-            component={HomeNavigator}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </AppStack.Navigator>
+        <AuthContextProvider>
+          <AppStack.Navigator>
+            <AppStack.Screen
+              name="Authentication"
+              component={AuthenticationNavigator}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <AppStack.Screen
+              name="Home"
+              component={HomeNavigator}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </AppStack.Navigator>
+        </AuthContextProvider>
+        
       </LoadAssets>
     </ThemeProvider>
   );
