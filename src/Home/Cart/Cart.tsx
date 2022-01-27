@@ -29,11 +29,12 @@ const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
           transparent
         />
       </Box>
-      <Box flex={1}>
+      <Box flex={1} backgroundColor="violet">
         <ScrollView
           style={{
             borderBottomLeftRadius: theme.borderRadii.xl,
             borderBottomRightRadius: theme.borderRadii.xl,
+            backgroundColor: theme.colors.yellow
           }}
           contentContainerStyle={{ paddingVertical: 50 * aspectRatio }}
           showsVerticalScrollIndicator={false}
@@ -42,7 +43,7 @@ const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
           {items.map((item, i) => (
             <Item
               key={item.id}
-              //onDelete need fix, passed as function then becomes undefined
+              //onDelete need fix
               onDelete={() => {
                 items.splice(i, 1);
                 setItems(items.concat());

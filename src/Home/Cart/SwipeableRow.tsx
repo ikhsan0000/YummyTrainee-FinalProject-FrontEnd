@@ -27,7 +27,7 @@ interface SwipeableRowProps {
 }
 
 const SwipeableRow = ({ children, onDelete, height:defaultHeight}: SwipeableRowProps) => {
-  console.log(console.log(onDelete));
+  console.log(onDelete.toString());
   
   const height = useSharedValue(defaultHeight);
   const deleteItem = useCallback(() => { onDelete() }, [onDelete])

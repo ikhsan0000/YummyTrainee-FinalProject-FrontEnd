@@ -2,11 +2,10 @@ import { StyleSheet, Text, View, StatusBar } from "react-native";
 import * as React from "react";
 import { AuthenticationNavigator } from "./src/Authentication";
 import { HomeNavigator } from "./src/Home";
+import 'react-native-reanimated'
 
 import { LoadAssets, theme } from "./src/components";
 import { ThemeProvider } from "@shopify/restyle";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { AppRoutes } from "./src/components/Navigation";
 import { AuthContextProvider } from "./src/services/authentication/auth.context";

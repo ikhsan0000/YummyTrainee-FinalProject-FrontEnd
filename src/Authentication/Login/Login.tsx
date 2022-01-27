@@ -43,23 +43,31 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
   } = useForm({ mode: "onChange", resolver: yupResolver(formSchema) });
 
   // Auth Context
-  const { onLogin, isAuthenticated, error, printToken }:any = useContext(AuthContext);
+  const { onLogin, isLoading, error }: any = useContext(AuthContext);
 
   // Submit handler
   const onSubmit = async (data: any) => {
-    await onLogin(data);
- 
-    if (isAuthenticated) {
+    await onLogin(data).then(() => {
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
           routes: [{ name: "Home" }],
         })
-        );
-      }      
+      );
+        
+      // NEED FIX USE ABOVE CODE FOR TESTING
+      // console.log('here2')
+      // if (isAuthenticated) {
+      //   console.log('here')
+      //   navigation.dispatch(
+      //     CommonActions.reset({
+      //       index: 0,
+      //       routes: [{ name: "Home" }],
+      //     })
+      //     );
+      //   }
+    });
   };
-
-
 
   const footer = (
     <Footer
@@ -164,6 +172,7 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
 
         <Box alignItems="center" marginTop="m">
           <Button
+            isLoading={isLoading}
             variant="primary"
             label="Log In"
             onPress={handleSubmit(onSubmit)}

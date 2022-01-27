@@ -7,6 +7,7 @@ import Login from './Login';
 import SignUp from './SignUp';
 import ForgotPassword from './ForgotPassword';
 import PasswordChanged from './PasswordChanged';
+import RegisterSuccess from './RegisterSuccess';
 
 export {default as Onboarding} from "./Onboarding"
 export {default as Welcome} from "./Welcome"
@@ -58,6 +59,14 @@ export const AuthenticationNavigator = () => {
       <AuthenticationStack.Screen
         name="PasswordChanged"
         component={PasswordChanged}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <AuthenticationStack.Screen
+        name="RegisterSuccess"
+        component={RegisterSuccess}
         options={{
           headerShown: false,
         }}

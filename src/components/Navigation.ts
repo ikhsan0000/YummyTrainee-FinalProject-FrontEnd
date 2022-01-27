@@ -33,6 +33,7 @@ export type AuthenticationRoutes = {
     SignUp: undefined,
     ForgotPassword: undefined,
     PasswordChanged: undefined,
+    RegisterSuccess: undefined,
 }
 
 export type HomeRoutes = {

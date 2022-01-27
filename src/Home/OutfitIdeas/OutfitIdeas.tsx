@@ -48,7 +48,7 @@ const OutfitIdeas = ({ navigation }: HomeNavigationProps<"OutfitIdeas">) => {
 
         <Categories />
 
-        {cards.map(
+        {/* {cards.map(
           ({ index, source }) =>
             currentIndex < index * step + step && (
               <Card
@@ -60,7 +60,7 @@ const OutfitIdeas = ({ navigation }: HomeNavigationProps<"OutfitIdeas">) => {
                 onSwipe={() => setCurrentIndex((prev) => prev + step)}
               />
             )
-        )}
+        )} */}
       </Box>
     </Box>
   );

@@ -1,17 +1,19 @@
 import { useTheme } from "@shopify/restyle";
 import React from "react";
-import { StyleSheet} from "react-native";
+import { StyleSheet } from "react-native";
 import { RectButton, RectButtonProperties } from "react-native-gesture-handler";
-import { Text } from ".";
+import { Text } from "./Theme";
+import { ActivityIndicator, Colors } from "react-native-paper";
 
 interface ButtonProps {
   variant: "default" | "primary";
   label?: string;
   onPress: () => void;
   style?: RectButtonProperties["style"];
+  isLoading?: boolean;
 }
 
-const Button = ({ variant, label, onPress, style }: ButtonProps) => {
+const Button = ({ variant, label, onPress, style, isLoading }: ButtonProps) => {
   const theme = useTheme();
   const backgroundColor =
     variant === "primary" ? theme.colors.primary : theme.colors.grey;
@@ -23,7 +25,11 @@ const Button = ({ variant, label, onPress, style }: ButtonProps) => {
       {...{ onPress }}
     >
       <Text variant="button" style={{ color }}>
-        {label}
+        {isLoading ? (
+          <ActivityIndicator animating={true} color={Colors.white} />
+        ) : (
+          label
+        )}
       </Text>
     </RectButton>
   );

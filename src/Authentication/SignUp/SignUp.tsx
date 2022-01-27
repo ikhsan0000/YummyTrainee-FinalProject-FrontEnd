@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Container, Text } from "../../components";
 import { AuthNavigationProps } from "../../components/Navigation";
@@ -8,6 +8,7 @@ import Checkbox from "../components/form/Checkbox";
 import TextInput from "../components/form/TextInput";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import { AuthContext } from "../../services/authentication/auth.context";
 
 interface SignUpProps {}
 
@@ -17,6 +18,8 @@ const SignUp = ({ navigation }: AuthNavigationProps<"SignUp">) => {
     email: Yup.string()
       .required("Email is required")
       .email("Email is not valid"),
+    fullName: Yup.string()
+      .required("Full Name is required"),
     password: Yup.string()
       .required("Password is required")
       .min(4, "Password length should be at least 4 characters"),
@@ -25,6 +28,10 @@ const SignUp = ({ navigation }: AuthNavigationProps<"SignUp">) => {
       .oneOf([Yup.ref("password")], "Password does not match"),
   });
 
+  // Auth Context
+  const { onRegister, isLoading, error }: any = useContext(AuthContext);
+
+
   // React Hook Form
   const {
     control,
@@ -32,9 +39,13 @@ const SignUp = ({ navigation }: AuthNavigationProps<"SignUp">) => {
     formState: { errors, isValid },
   } = useForm({ mode: "onBlur", resolver: yupResolver(formSchema) });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-  };
+  const onSubmit = async (data: any) => {
+    await onRegister(data).then(() => {
+      navigation.navigate('RegisterSuccess');
+    }).catch((err:any) => {
+      console.log(err)
+    })
+  }
 
   const footer = (
     <Footer
@@ -71,6 +82,26 @@ const SignUp = ({ navigation }: AuthNavigationProps<"SignUp">) => {
                 value={value}
                 error={errors.email}
                 errorMessage={errors?.email?.message}
+                onChangeText={(text) => onChange(text)}
+              ></TextInput>
+            );
+          }}
+        />
+        <Controller
+          control={control}
+          name="fullName"
+          render={({ field: { onChange, value, onBlur } }) => {
+            return (
+              <TextInput
+                icon="user"
+                placeholder="Enter your Full Name"
+                autoCompleteType="email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                onBlur={onBlur}
+                value={value}
+                error={errors.fullName}
+                errorMessage={errors?.fullName?.message}
                 onChangeText={(text) => onChange(text)}
               ></TextInput>
             );
@@ -119,6 +150,7 @@ const SignUp = ({ navigation }: AuthNavigationProps<"SignUp">) => {
 
         <Box alignItems="center" marginTop="m">
           <Button
+            isLoading={isLoading}
             variant="primary"
             label="Create Your Account"
             onPress={handleSubmit(onSubmit)}
