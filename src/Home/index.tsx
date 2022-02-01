@@ -7,6 +7,7 @@ import TransactionHistory from "./TransactionHistory";
 import EditProfile from "./EditProfile";
 import NotificationSettings from "./NotificationSettings";
 import Cart from "./Cart";
+import ProductDetail from "./OutfitIdeas/ProductDetail";
 
 const Drawer = createDrawerNavigator<HomeRoutes>();
 export const HomeNavigator = () => {
@@ -58,6 +59,14 @@ export const HomeNavigator = () => {
       <Drawer.Screen
         name="Cart"
         component={Cart}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Drawer.Screen
+        name="ProductDetail"
+        component={ProductDetail}
         options={{
           headerShown: false,
         }}

@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, ScrollView } from "react-native";
+import { Box } from "../../components/Theme";
 import Category from "./Category";
 const categories = [
   {
@@ -33,11 +34,13 @@ interface CategoriesProps {}
 
 const Categories = () => {
   return (
+    <Box>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {categories.map((category) => (
           <Category key={category.id} category={category} />
         ))}
       </ScrollView>
+    </Box>
   );
 };
 

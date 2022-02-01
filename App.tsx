@@ -2,13 +2,15 @@ import { StyleSheet, Text, View, StatusBar } from "react-native";
 import * as React from "react";
 import { AuthenticationNavigator } from "./src/Authentication";
 import { HomeNavigator } from "./src/Home";
-import 'react-native-reanimated'
+import "react-native-reanimated";
 
 import { LoadAssets, theme } from "./src/components";
 import { ThemeProvider } from "@shopify/restyle";
 import { createStackNavigator } from "@react-navigation/stack";
 import { AppRoutes } from "./src/components/Navigation";
 import { AuthContextProvider } from "./src/services/authentication/auth.context";
+import { ProductsContextProvider } from "./src/services/products/products.context";
+import { CartContextProvider } from "./src/services/cart/cart.context";
 
 const fonts = {
   "SFProDisplay-Bold": require("./assets/fonts/SF-Pro-Display-Bold.otf"),
@@ -24,26 +26,29 @@ export default function App() {
     <ThemeProvider {...{ theme }}>
       <LoadAssets {...{ fonts }}>
         <StatusBar barStyle="light-content" />
-
         <AuthContextProvider>
-          <AppStack.Navigator>
-            <AppStack.Screen
-              name="Authentication"
-              component={AuthenticationNavigator}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <AppStack.Screen
-              name="Home"
-              component={HomeNavigator}
-              options={{
-                headerShown: false,
-              }}
-            />
-          </AppStack.Navigator>
+          <ProductsContextProvider>
+            <CartContextProvider>
+              <AppStack.Navigator>
+                <AppStack.Screen
+                  name="Authentication"
+                  component={AuthenticationNavigator}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+
+                <AppStack.Screen
+                  name="Home"
+                  component={HomeNavigator}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+              </AppStack.Navigator>
+            </CartContextProvider>
+          </ProductsContextProvider>
         </AuthContextProvider>
-        
       </LoadAssets>
     </ThemeProvider>
   );

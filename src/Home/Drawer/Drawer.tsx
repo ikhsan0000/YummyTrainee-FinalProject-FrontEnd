@@ -1,4 +1,8 @@
-import { CommonActions, DrawerActions, useNavigation } from "@react-navigation/native";
+import {
+  CommonActions,
+  DrawerActions,
+  useNavigation,
+} from "@react-navigation/native";
 import React from "react";
 import { Image, Dimensions, StyleSheet } from "react-native";
 import { Header } from "../../components";
@@ -44,14 +48,25 @@ const items: DrawerItemProps[] = [
   {
     icon: "log-out",
     label: "Logout",
-    onPress: (navigation:any) => navigation.dispatch(CommonActions.reset({
-      index: 0,
-      routes: [{name: 'Authentication'}]
-    })) ,
+    onPress: (navigation: any, onLogout: any) => {
+      // onLogout()
+      // .then((data:any) => {
+      //   console.log(data)
+      // })
+      // .catch((err:any) => {
+      //   console.log(err)
+      // })
+      
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Authentication" }],
+        })
+      );
+    },
     color: "secondary",
   },
 ];
-
 
 const Drawer = () => {
   const navigation = useNavigation();
@@ -69,8 +84,14 @@ const Drawer = () => {
         >
           <Header
             title="my profile"
-            left={{ icon: "x", onPress: () => navigation.dispatch(DrawerActions.closeDrawer()) }}
-            right={{ icon: "shopping-cart", onPress: () => navigation.navigate("Cart") }}
+            left={{
+              icon: "x",
+              onPress: () => navigation.dispatch(DrawerActions.closeDrawer()),
+            }}
+            right={{
+              icon: "shopping-cart",
+              onPress: () => navigation.navigate('Cart'),
+            }}
             dark
           />
         </Box>

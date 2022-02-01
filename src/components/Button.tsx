@@ -4,6 +4,8 @@ import { StyleSheet } from "react-native";
 import { RectButton, RectButtonProperties } from "react-native-gesture-handler";
 import { Text } from "./Theme";
 import { ActivityIndicator, Colors } from "react-native-paper";
+import { Feather as Icon } from "@expo/vector-icons";
+
 
 interface ButtonProps {
   variant: "default" | "primary";
@@ -11,9 +13,10 @@ interface ButtonProps {
   onPress: () => void;
   style?: RectButtonProperties["style"];
   isLoading?: boolean;
+  icon?: string
 }
 
-const Button = ({ variant, label, onPress, style, isLoading }: ButtonProps) => {
+const Button = ({ variant, label, onPress, style, isLoading, icon }: ButtonProps) => {
   const theme = useTheme();
   const backgroundColor =
     variant === "primary" ? theme.colors.primary : theme.colors.grey;
@@ -30,6 +33,7 @@ const Button = ({ variant, label, onPress, style, isLoading }: ButtonProps) => {
         ) : (
           label
         )}
+        {(icon && isLoading==false) && (<>&nbsp;<Icon name={icon} /></>)}
       </Text>
     </RectButton>
   );

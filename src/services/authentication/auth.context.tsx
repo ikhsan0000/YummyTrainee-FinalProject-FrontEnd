@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { loginRequest, save, getValueFor, registerRequest } from "./auth.service";
+import { loginRequest, save, getValueFor, registerRequest, logoutRequest } from "./auth.service";
 
 export const AuthContext = createContext({});
 
@@ -18,14 +18,16 @@ export const AuthContextProvider = ({ children }: any) => {
       });
       setIsLoading(true)
       loginRequest(formattedData)
-        .then((data: any) => {
+        .then(async (data: any) => {
           setError(false);
+          console.log(data.data)
           setAccessToken(data.data.accessToken);
           setRefreshToken(data.data.refreshToken);
 
-          save("aToken", accessToken);    //save access token to AsyncStorage
-          save("rToken", refreshToken);   //save refresh token to AsyncStorage
+          await save("aToken", accessToken);    //save access token to AsyncStorage
+          await save("rToken", refreshToken);   //save refresh token to AsyncStorage
 
+          printToken("aToken")
           setIsAuthenticated(true);
           setIsLoading(false)
           resolve();
@@ -62,6 +64,21 @@ export const AuthContextProvider = ({ children }: any) => {
     });
   };
 
+  const onLogout = async () => {
+    const aToken = await getValueFor('aToken');
+    return new Promise<void>(async (resolve, reject) => {
+      logoutRequest(aToken)
+      .then((data) => {
+        console.log(data)
+        resolve(data)
+      })
+      .catch((err) => {
+        console.log(err)
+        reject(err)
+      })
+    })
+  }
+
 
   const printToken = (key: string) => {
     getValueFor(key);
@@ -72,6 +89,7 @@ export const AuthContextProvider = ({ children }: any) => {
       value={{
         onLogin,
         onRegister,
+        onLogout,
         isAuthenticated,
         isLoading,
         error,
