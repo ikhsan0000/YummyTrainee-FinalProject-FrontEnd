@@ -39,7 +39,7 @@ const OutfitIdeas = ({ navigation }: HomeNavigationProps<"OutfitIdeas">) => {
   return (
     <Box flex={1} backgroundColor="white">
       <Header
-        title="outfit ideas"
+        title="product list"
         left={{ icon: "menu", onPress: () => navigation.openDrawer() }}
         right={{
           icon: "shopping-cart",

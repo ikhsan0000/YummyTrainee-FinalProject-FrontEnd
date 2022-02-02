@@ -1,5 +1,5 @@
 import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CartContainer from "./CartContainer";
 import { Box, Text } from "../../components/Theme";
 import { Header } from "../../components";
@@ -8,6 +8,8 @@ import Item from "./Item";
 import Svg, { Path } from "react-native-svg";
 import { useTheme } from "@shopify/restyle";
 import Checkout from "./Checkout";
+import { CartContext } from "../../services/cart/cart.context";
+import { ActivityIndicator, Colors } from "react-native-paper";
 
 const { width } = Dimensions.get("window");
 const aspectRatio = width / 375;
@@ -19,6 +21,16 @@ const defaultItems = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
 const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
   const theme = useTheme();
   const [items, setItems] = useState(defaultItems);
+  const [cartItems, setCartItems] = useState([])
+
+  // Cart Context
+  const { cartDetail, isLoading } : any = useContext(CartContext)
+
+  useEffect( async () => {
+    const retrivedCart = await cartDetail()
+    setCartItems(retrivedCart.data)
+    console.log(cartItems)
+  },[])
 
   return (
     <CartContainer CheckoutComponent={Checkout}>
@@ -40,10 +52,12 @@ const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
           showsVerticalScrollIndicator={false}
         >
 
-          {items.map((item, i) => (
+          {isLoading && ( <ActivityIndicator style={{paddingTop: 200}} animating={true} color={Colors.blue400} size="large" />)}
+          {cartItems && cartItems.map((item:any, i) => (
             <Item
-              key={item.id}
-              //onDelete need fix
+              key={i}
+              cartItem={item}
+              // !!! TODO onDelete call delete cart item API !!!
               onDelete={() => {
                 items.splice(i, 1);
                 setItems(items.concat());
@@ -65,7 +79,7 @@ const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
             <Path d={d} fill={theme.colors.primary} />
           </Svg>
           <Text variant="title2" color="white" textAlign="center">
-            3 Items Added
+            {cartItems.length} Items Added
           </Text>
         </Box>
       </Box>

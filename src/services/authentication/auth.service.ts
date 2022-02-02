@@ -52,7 +52,7 @@ export const save = async (key: string, value: string): Promise<any> => {
 export const getValueFor = async (key: string): Promise<any> => {
     let result = await SecureStore.getItemAsync(key);
     if (result) {
-        alert("Here's your value\n" + result);
+        // alert("Here's your value\n" + result);
         return result
     } else {
         alert('No values stored under that key.');

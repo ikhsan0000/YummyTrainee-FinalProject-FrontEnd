@@ -61,6 +61,7 @@ export const HomeNavigator = () => {
         component={Cart}
         options={{
           headerShown: false,
+          unmountOnBlur:true
         }}
       />
 
@@ -69,6 +70,7 @@ export const HomeNavigator = () => {
         component={ProductDetail}
         options={{
           headerShown: false,
+          unmountOnBlur:true
         }}
       />
     </Drawer.Navigator>

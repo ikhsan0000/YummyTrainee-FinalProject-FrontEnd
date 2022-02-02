@@ -8,6 +8,7 @@ import { Button, Header } from "../../components";
 import { RectButton } from "react-native-gesture-handler";
 import RoundedIcon from "../../Authentication/components/RoundedIcon";
 import { CartContext } from "../../services/cart/cart.context";
+import CheckboxGroup from "../EditProfile/CheckboxGroup";
 
 const { width } = Dimensions.get("window");
 
@@ -15,9 +16,18 @@ const ProductDetail = ({ navigation, route }: any) => {
   const { product } = route.params;
   const [quantity, setQuantity] = useState(1);
   const imgUrl = product.productImage[0].fileName;
+  // const [selectedSize, setSelectedSize] = useState('')
+
 
   // Cart Context
   const { addToCart, isLoading }: any = useContext(CartContext);
+
+  let currentProductToCart = {
+    productId: product.id,
+    quantity: quantity,
+    size: product.sizes[0].name,
+    image: imgUrl,
+  };
 
   const subtractQty = () => {
     if (quantity === 1) {
@@ -30,22 +40,24 @@ const ProductDetail = ({ navigation, route }: any) => {
     setQuantity((last) => last + 1);
   };
 
-  // SIZE STILL HARDCODED, TO DO: HANDLE SIZES
-  let currentProductToCart = {
-    productId: product.id,
-    quantity: quantity,
-    size: "M",
-    image: imgUrl,
-  };
+  const onSizeChange = (size: string) => {
+      // setSelectedSize(size)
+      currentProductToCart.size = size
+  }
+
 
   const onSubmit = async () => {
     await addToCart(currentProductToCart)
-    .then(Alert.alert('added to cart'))
-    .catch((err:any) => console.log(err))
+      .then(Alert.alert("added to cart"))
+      .catch((err: any) => console.log(err));
   };
 
+  const formattedSizes = product.sizes.map(({name}: any) => {
+      return {value:name, label: name}
+  })
+  
   return (
-    <Box flex={1} backgroundColor="grey">
+    <Box flex={1} backgroundColor="white">
       <Box
         zIndex={99}
         position="absolute"
@@ -77,10 +89,22 @@ const ProductDetail = ({ navigation, route }: any) => {
         <Text variant="title2">{product.name}</Text>
         {/* <Box flex={1} width={100} backgroundColor="secondary"/>  */}
         <Text variant="title1">$ {product.price}</Text>
-        <Text variant="body" color="darkGrey">
-          category : {product.category.name}
+
+
+        <Text variant="body" color="darkGrey" fontSize={14}>
+          Brand : {product.brand.name}
         </Text>
-        <Box marginTop="m" />
+        <Text variant="body" color="darkGrey" fontSize={14}>
+          Category : {product.category.name}
+        </Text>
+        <Box flexDirection="row" paddingVertical="s" alignItems="center">
+          <Text variant="title3">sizes available: </Text>
+          <Box marginLeft="m" />
+          <CheckboxGroup options={formattedSizes} radio defaultSelected={product.sizes[0].name} callback={onSizeChange} />
+        </Box>
+
+        <Box flex={0.01} backgroundColor="primary" />
+        <Text variant="title3" color="darkGrey" fontSize={14}>Seller's description:</Text>
         <Text variant="body">{product.description}</Text>
       </Box>
 
