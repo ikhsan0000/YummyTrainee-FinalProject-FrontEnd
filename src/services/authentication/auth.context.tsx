@@ -7,8 +7,6 @@ export const AuthContextProvider = ({ children }: any) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [accessToken, setAccessToken] = useState("");
-  const [refreshToken, setRefreshToken] = useState("");
 
   const onLogin = (data: any) => {
     return new Promise<void>(async (resolve, reject) => {
@@ -20,12 +18,9 @@ export const AuthContextProvider = ({ children }: any) => {
       loginRequest(formattedData)
         .then(async (data: any) => {
           setError(false);
-          console.log(data.data)
-          setAccessToken(data.data.accessToken);
-          setRefreshToken(data.data.refreshToken);
 
-          await save("aToken", accessToken);    //save access token to AsyncStorage
-          await save("rToken", refreshToken);   //save refresh token to AsyncStorage
+          await save("aToken", data.data.accessToken);    //save access token to AsyncStorage
+          await save("rToken", data.data.refreshToken);   //save refresh token to AsyncStorage
 
           printToken("aToken")
           setIsAuthenticated(true);
@@ -35,7 +30,7 @@ export const AuthContextProvider = ({ children }: any) => {
         .catch((err) => {
           setIsLoading(false)
           setError(true);
-          console.log(err);
+          reject(err);
         });
     });
   };
@@ -48,7 +43,6 @@ export const AuthContextProvider = ({ children }: any) => {
         password: data.password,
         passwordConfirm: data.passwordConfirm
       });
-      console.log(formattedData);
       setIsLoading(true)
 
       // resolve()
@@ -69,11 +63,9 @@ export const AuthContextProvider = ({ children }: any) => {
     return new Promise<void>(async (resolve, reject) => {
       logoutRequest(aToken)
       .then((data) => {
-        console.log(data)
         resolve(data)
       })
       .catch((err) => {
-        console.log(err)
         reject(err)
       })
     })

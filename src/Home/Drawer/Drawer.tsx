@@ -3,16 +3,18 @@ import {
   DrawerActions,
   useNavigation,
 } from "@react-navigation/native";
-import React from "react";
+import React, { useContext } from "react";
 import { Image, Dimensions, StyleSheet } from "react-native";
 import { Header } from "../../components";
 import theme, { Box, Text } from "../../components/Theme";
+import { AuthContext } from "../../services/authentication/auth.context";
 import DrawerItem, { DrawerItemProps } from "./DrawerItem";
 
 const aspectRatio = 750 / 1125;
 const { width } = Dimensions.get("window");
 export const DRAWER_WIDTH = width * 0.85;
 const height = DRAWER_WIDTH * aspectRatio;
+
 
 const items: DrawerItemProps[] = [
   {
@@ -49,20 +51,25 @@ const items: DrawerItemProps[] = [
     icon: "log-out",
     label: "Logout",
     onPress: (navigation: any, onLogout: any) => {
-      // onLogout()
-      // .then((data:any) => {
-      //   console.log(data)
-      // })
-      // .catch((err:any) => {
-      //   console.log(err)
-      // })
-      
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "Authentication" }],
+      // navigation.dispatch(
+      //   CommonActions.reset({
+      //     index: 0,
+      //     routes: [{ name: "Authentication" }],
+      //   })
+      // );
+
+      onLogout()
+        .then((data: any) => {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: "Authentication" }],
+            })
+          );
         })
-      );
+        .catch((err: any) => {
+          console.log(err);
+        });
     },
     color: "secondary",
   },
@@ -70,6 +77,7 @@ const items: DrawerItemProps[] = [
 
 const Drawer = () => {
   const navigation = useNavigation();
+
   return (
     <Box flex={1}>
       <Box flex={0.15} backgroundColor="white">
@@ -90,7 +98,7 @@ const Drawer = () => {
             }}
             right={{
               icon: "shopping-cart",
-              onPress: () => navigation.navigate('Cart'),
+              onPress: () => navigation.navigate("Cart"),
             }}
             dark
           />

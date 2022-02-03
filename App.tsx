@@ -11,6 +11,7 @@ import { AppRoutes } from "./src/components/Navigation";
 import { AuthContextProvider } from "./src/services/authentication/auth.context";
 import { ProductsContextProvider } from "./src/services/products/products.context";
 import { CartContextProvider } from "./src/services/cart/cart.context";
+import { TransactionContextProvider } from "./src/services/transaction/transaction.context";
 
 const fonts = {
   "SFProDisplay-Bold": require("./assets/fonts/SF-Pro-Display-Bold.otf"),
@@ -28,25 +29,27 @@ export default function App() {
         <StatusBar barStyle="light-content" />
         <AuthContextProvider>
           <ProductsContextProvider>
-            <CartContextProvider>
-              <AppStack.Navigator>
-                <AppStack.Screen
-                  name="Authentication"
-                  component={AuthenticationNavigator}
-                  options={{
-                    headerShown: false,
-                  }}
-                />
+            <TransactionContextProvider>
+              <CartContextProvider>
+                <AppStack.Navigator>
+                  <AppStack.Screen
+                    name="Authentication"
+                    component={AuthenticationNavigator}
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
 
-                <AppStack.Screen
-                  name="Home"
-                  component={HomeNavigator}
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-              </AppStack.Navigator>
-            </CartContextProvider>
+                  <AppStack.Screen
+                    name="Home"
+                    component={HomeNavigator}
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                </AppStack.Navigator>
+              </CartContextProvider>
+            </TransactionContextProvider>
           </ProductsContextProvider>
         </AuthContextProvider>
       </LoadAssets>

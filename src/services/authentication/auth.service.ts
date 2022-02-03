@@ -16,7 +16,6 @@ export const loginRequest = (data: string) => {
 }
 
 export const registerRequest = (data: string) => {
-    console.log(data)    
 
     return new Promise<any>(async (resolve, reject) => {
 
@@ -33,8 +32,7 @@ export const registerRequest = (data: string) => {
 export const logoutRequest = (aToken: any) => {
 
     return new Promise<any>(async (resolve, reject) => {
-
-        await baseUrlAxios.post('auth/logout', null,
+        await baseUrlAxios.post('auth/logout', {},
             {headers: { Authorization: `Bearer ${aToken}` } }
         ).then((data: any) => {
             resolve(data)

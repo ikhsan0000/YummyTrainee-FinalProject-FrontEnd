@@ -28,7 +28,7 @@ const Item = ({ onDelete, cartItem }: ItemProps) => {
   };
 
   return (
-    <SwipeableRow onDelete={onDelete} height={height} cartItemId={cartItem.cartToProductId} onAddQty={onAddQty} onSubtractQty={onSubtractQty}>
+    <SwipeableRow onDelete={onDelete} height={height} cartItemId={cartItem.id} onAddQty={onAddQty} onSubtractQty={onSubtractQty}>
       <Box padding="l" flexDirection="row">
         <Box
           width={120}

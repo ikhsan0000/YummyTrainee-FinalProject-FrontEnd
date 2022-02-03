@@ -29,11 +29,10 @@ const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
   useEffect( async () => {
     const retrivedCart = await cartDetail()
     setCartItems(retrivedCart.data)
-    console.log(cartItems)
   },[])
 
   return (
-    <CartContainer CheckoutComponent={Checkout}>
+    <CartContainer CheckoutComponent={Checkout} cartDetail={cartItems}>
       <Box backgroundColor="primary">
         <Header
           title="shopping cart"
@@ -52,7 +51,7 @@ const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
           showsVerticalScrollIndicator={false}
         >
 
-          {isLoading && ( <ActivityIndicator style={{paddingTop: 200}} animating={true} color={Colors.blue400} size="large" />)}
+          {/* {isLoading && ( <ActivityIndicator style={{paddingTop: 200}} animating={true} color={Colors.blue400} size="large" />)} */}
           {cartItems && cartItems.map((item:any, i) => (
             <Item
               key={i}

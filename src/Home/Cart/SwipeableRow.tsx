@@ -54,9 +54,9 @@ const SwipeableRow = ({
       });
     let reqData;
     if (type === "add") {
-      reqData = { cartToProductId: cartItemId, quantity: currentQty + 1 };
+      reqData = { id: cartItemId, quantity: currentQty + 1 };
     } else if (type === "subtract") {
-      reqData = { cartToProductId: cartItemId, quantity: currentQty - 1 };
+      reqData = { id: cartItemId, quantity: currentQty - 1 };
     }
 
     await editQuantity(reqData);
@@ -64,9 +64,6 @@ const SwipeableRow = ({
 
   const height = useSharedValue(defaultHeight);
 
-  const deleteItem = () => {
-    console.log('test')
-  }
   const theme = useTheme();
   const translateX = useSharedValue(0);
 
@@ -101,7 +98,6 @@ const SwipeableRow = ({
     opacity: translateX.value < 0 ? 1 : 0,
   }));
 
-  console.log(deleteItem.toString())
   return (
     <View>
       <Animated.View style={[StyleSheet.absoluteFill, deleteStyle]}>

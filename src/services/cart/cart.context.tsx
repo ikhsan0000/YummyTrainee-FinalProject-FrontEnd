@@ -16,7 +16,6 @@ export const CartContextProvider = ({ children }: any) => {
 
   const addToCart = async (data: any) => {
     const aToken = await getValueFor("aToken");
-    console.log(aToken);
     return new Promise<void>(async (resolve, reject) => {
       setIsLoading(true);
       addToCartRequest(aToken, data)

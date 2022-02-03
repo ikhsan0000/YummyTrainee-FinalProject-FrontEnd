@@ -19,13 +19,13 @@ const Transaction = ({ transaction }: TransactionProps) => {
       <Box>
         <Box flexDirection="row" alignItems="center">
           <Box
-            backgroundColor={transaction.color}
+            backgroundColor="primary"
             marginRight="s"
             style={{ width: 10, height: 10, borderRadius: 5 }}
           />
-          <Text variant="title3">#{transaction.id}</Text>
+          <Text variant="title3">TransactionID#{transaction.id}</Text>
         </Box>
-        <Text color="darkGrey">{`$${transaction.value} - ${moment(transaction.date).format("DD MMM, YYYY")}`}</Text>
+        <Text color="darkGrey">{`$${transaction.totalPrice} - ${moment(transaction.date).format("DD MMM, YYYY")}`}</Text>
       </Box>
       <Box>
         <Text color="secondary" variant="button">See more</Text>

@@ -1,11 +1,12 @@
 import { ScrollView, View, Image, StyleSheet, Dimensions } from "react-native";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Text } from "../../components/Theme";
 import { Header } from "../../components";
 import { HomeNavigationProps } from "../../components/Navigation";
 import Graph, { DataPoint } from "./Graph/Graph";
 import Transaction from "./Transaction";
 import TopCurve from "./TopCurve";
+import { TransactionContext } from "../../services/transaction/transaction.context";
 
 const aspectRatio = 6;
 
@@ -51,6 +52,30 @@ const TransactionHistory = ({
   navigation,
 }: HomeNavigationProps<"TransactionHistory">) => {
 
+  // Transaction Context
+  const { getTransactions }:any = useContext(TransactionContext)
+
+  const [history, setHistory] = useState([{}])
+
+  useEffect(async () => {
+    const retriveTransactionHistory = await getTransactions()
+    setHistory(retriveTransactionHistory.data)
+  },[])
+
+  let totalSpent = 0
+  history.forEach((transaction) => {
+    totalSpent += transaction.totalPrice
+  })
+  
+  let formattedHistory: any[] = []
+
+  if(history.length !== 0){
+    history.forEach(({createdAt, ...rest}) => {
+      formattedHistory.push({createdAt: new Date(createdAt).getTime(), ...rest})
+    })
+  }
+  
+  
   return (
     <Box flex={1} backgroundColor="white">
       <Header
@@ -68,7 +93,7 @@ const TransactionHistory = ({
             <Text variant="header" color="secondary" opacity={0.3}>
               TOTAL SPENT
             </Text>
-            <Text variant="title1">$999,99</Text>
+            <Text variant="title1">${totalSpent}</Text>
           </Box>
           <Box backgroundColor="primaryLight" borderRadius="m" padding="s">
             <Text color="primary">All time</Text>
@@ -81,8 +106,8 @@ const TransactionHistory = ({
           numberOfMonths={numberOfMonths}
         />
         <ScrollView contentContainerStyle={{paddingBottom: footerHeight}} showsVerticalScrollIndicator={false}>
-          {data.map((transaction) => (
-            <Transaction key={transaction.id} transaction={transaction} />
+          {formattedHistory.map((transaction, i) => (
+            <Transaction key={i} transaction={transaction} />
           ))}
         </ScrollView>
       </Box>

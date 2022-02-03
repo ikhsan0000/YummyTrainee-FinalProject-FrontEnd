@@ -21,6 +21,7 @@ export const HomeNavigator = () => {
         component={OutfitIdeas}
         options={{
           headerShown: false,
+          unmountOnBlur:true
         }}
       />
 
@@ -29,6 +30,7 @@ export const HomeNavigator = () => {
         component={FavouriteOutfits}
         options={{
           headerShown: false,
+          unmountOnBlur:true
         }}
       />
 
@@ -37,6 +39,7 @@ export const HomeNavigator = () => {
         component={TransactionHistory}
         options={{
           headerShown: false,
+          unmountOnBlur:true
         }}
       />
 
