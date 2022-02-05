@@ -10,25 +10,31 @@ import { useTheme } from "@shopify/restyle";
 import Checkout from "./Checkout";
 import { CartContext } from "../../services/cart/cart.context";
 import { ActivityIndicator, Colors } from "react-native-paper";
+import { StackActions } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 const aspectRatio = width / 375;
 const height = 100 * aspectRatio;
 const d = "M 0 0 A 50 50 0 0 0 50 50 H 325 A 50 50 0 0 1 376 100 V 0 Z";
 
-const defaultItems = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
-
 const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
   const theme = useTheme();
-  const [items, setItems] = useState(defaultItems);
   const [cartItems, setCartItems] = useState([])
 
   // Cart Context
-  const { cartDetail, isLoading } : any = useContext(CartContext)
+  const { cartDetail, deleteItem } : any = useContext(CartContext)
 
   useEffect( async () => {
-    const retrivedCart = await cartDetail()
-    setCartItems(retrivedCart.data)
+    try{
+      const retrivedCart = await cartDetail()
+      setCartItems(retrivedCart.data)
+    } catch(err) {
+      console.log(err)
+      // navigation.navigate('Authentication', { screen: 'Login' });
+      navigation.dispatch(
+        StackActions.replace('Authentication', { screen: 'Login' })
+      );
+    }
   },[])
 
   return (
@@ -52,17 +58,22 @@ const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
         >
 
           {/* {isLoading && ( <ActivityIndicator style={{paddingTop: 200}} animating={true} color={Colors.blue400} size="large" />)} */}
-          {cartItems && cartItems.map((item:any, i) => (
+          {cartItems && cartItems.map((item:any, i) => {
+            return (
             <Item
               key={i}
               cartItem={item}
-              // !!! TODO onDelete call delete cart item API !!!
               onDelete={() => {
-                items.splice(i, 1);
-                setItems(items.concat());
+                const updatedItems = cartItems.filter(currentItem => {
+                    return currentItem.id !== item.id
+                })
+                console.log(updatedItems)
+                setCartItems(updatedItems);
+                deleteItem(item.id)
               }}
             />
-          ))}
+          )}
+          )}
           
         </ScrollView>
         <Box

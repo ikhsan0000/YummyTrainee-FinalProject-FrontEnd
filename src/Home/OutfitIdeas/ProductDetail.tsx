@@ -9,15 +9,22 @@ import { RectButton } from "react-native-gesture-handler";
 import RoundedIcon from "../../Authentication/components/RoundedIcon";
 import { CartContext } from "../../services/cart/cart.context";
 import CheckboxGroup from "../EditProfile/CheckboxGroup";
+import Modal from "../../components/Modal";
+import ModalBox from "../../components/Modal";
+import ModalButtons from "./ModalButtons";
+import { StackActions } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 
 const ProductDetail = ({ navigation, route }: any) => {
   const { product } = route.params;
   const [quantity, setQuantity] = useState(1);
+  const [showModal, setShowModal] = useState(false);
   const imgUrl = product.productImage[0].fileName;
   // const [selectedSize, setSelectedSize] = useState('')
-
+  const closeModal = () => {
+    setShowModal(false);
+  }
 
   // Cart Context
   const { addToCart, isLoading }: any = useContext(CartContext);
@@ -48,8 +55,13 @@ const ProductDetail = ({ navigation, route }: any) => {
 
   const onSubmit = async () => {
     await addToCart(currentProductToCart)
-      .then(Alert.alert("added to cart"))
-      .catch((err: any) => console.log(err));
+      .then(setShowModal(true))
+      .catch((err: any) => {
+        console.log(err)
+        navigation.dispatch(
+          StackActions.replace('Authentication', { screen: 'Login' })
+        );
+      });
   };
 
   const formattedSizes = product.sizes.map(({name}: any) => {
@@ -58,6 +70,7 @@ const ProductDetail = ({ navigation, route }: any) => {
   
   return (
     <Box flex={1} backgroundColor="white">
+      <ModalBox trigger={showModal} closeModal={closeModal} label="Item added to cart" buttons={<ModalButtons />}/>
       <Box
         zIndex={99}
         position="absolute"

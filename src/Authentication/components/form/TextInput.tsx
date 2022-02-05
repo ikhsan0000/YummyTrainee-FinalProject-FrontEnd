@@ -12,11 +12,12 @@ import RoundedIcon from "../RoundedIcon";
 
 interface TextInputProps extends RNTextInputProps {
   icon: string;
-  error: any;
-  errorMessage: any;
+  error?: any;
+  errorMessage?: any;
+  noIcon?: boolean
 }
 
-const TextInput = ({ icon, error, errorMessage, ...props }: TextInputProps) => {
+const TextInput = ({ icon, error, errorMessage, noIcon, ...props }: TextInputProps) => {
   
   const SIZE = theme.borderRadii.m * 2;
 
@@ -79,7 +80,7 @@ const TextInput = ({ icon, error, errorMessage, ...props }: TextInputProps) => {
           />
         </Box>
 
-        {(props.value !== undefined || error) && (
+        {(props.value !== undefined && noIcon == undefined || error) && (
           // <Box paddingHorizontal="m">
           //   <Box
           //     borderRadius="m"

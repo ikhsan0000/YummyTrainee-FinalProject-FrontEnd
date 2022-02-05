@@ -18,6 +18,7 @@ import { BorderlessButton } from "react-native-gesture-handler";
 import {
   CommonActions,
   CompositeNavigationProp,
+  StackActions,
 } from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -48,11 +49,9 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
   // Submit handler
   const onSubmit = async (data: any) => {
     await onLogin(data).then(() => {
+    
       navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "Home" }],
-        })
+        StackActions.replace('Home')
       );
         
       // NEED FIX USE ABOVE CODE FOR TESTING

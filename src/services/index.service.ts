@@ -6,3 +6,22 @@ export const baseUrlAxios = axios.create({
         'Content-Type': 'application/json'
     },
 })
+
+// baseUrlAxios.interceptors.response.use((res) => {
+//     return res
+//     },
+//     async (err) => {
+//         const rToken = await getValueFor('rToken')
+//         return new Promise<any>(async (resolve, reject) => {
+
+//             await baseUrlAxios.post('auth/refresh',{},
+//             {headers: { Authorization: `Bearer ${rToken}` } }
+//             ).then((data: any) => {
+//                 resolve(data)
+//             }).catch((err: any) => {
+//                 reject(err)
+//             });
+    
+//         })
+//     }
+// )

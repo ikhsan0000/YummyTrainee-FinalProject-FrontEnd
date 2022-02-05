@@ -7,12 +7,12 @@ import Graph, { DataPoint } from "./Graph/Graph";
 import Transaction from "./Transaction";
 import TopCurve from "./TopCurve";
 import { TransactionContext } from "../../services/transaction/transaction.context";
+import { StackActions } from "@react-navigation/native";
 
 const aspectRatio = 6;
 
 const footerHeight = Dimensions.get("window").width / 6;
 
-const startDate = new Date("2019-01-01").getTime();
 const numberOfMonths = 6;
 
 const data: DataPoint[] = [
@@ -51,37 +51,47 @@ const data: DataPoint[] = [
 const TransactionHistory = ({
   navigation,
 }: HomeNavigationProps<"TransactionHistory">) => {
-
   // Transaction Context
-  const { getTransactions }:any = useContext(TransactionContext)
+  const { getTransactions }: any = useContext(TransactionContext);
 
-  const [history, setHistory] = useState([{}])
+  const [history, setHistory] = useState([{}]);
 
   useEffect(async () => {
-    const retriveTransactionHistory = await getTransactions()
-    setHistory(retriveTransactionHistory.data)
-  },[])
+    try{
+      const retriveTransactionHistory = await getTransactions();
+      setHistory(retriveTransactionHistory.data);
+    } catch {
+      navigation.dispatch(
+        StackActions.replace('Authentication', { screen: 'Login' })
+      );
+    }
+  }, []);
 
-  let totalSpent = 0
+  let totalSpent = 0;
   history.forEach((transaction) => {
-    totalSpent += transaction.totalPrice
-  })
-  
-  let formattedHistory: any[] = []
+    totalSpent += transaction.totalPrice;
+  });
 
-  if(history.length !== 0){
-    history.forEach(({createdAt, ...rest}) => {
-      formattedHistory.push({createdAt: new Date(createdAt).getTime(), ...rest})
-    })
+  let formattedHistory: any[] = [];
+
+  if (history.length !== 0) {
+    history.forEach(({ createdAt, totalPrice, ...rest }) => {
+      formattedHistory.push({
+        date: new Date(createdAt).getTime(),
+        value: totalPrice,
+        ...rest,
+      });
+    });
   }
-  
-  
+
+  const startDate = formattedHistory[0].createdAt;
+
   return (
     <Box flex={1} backgroundColor="white">
       <Header
         title="transaction history"
         left={{ icon: "menu", onPress: () => navigation.openDrawer() }}
-        right={{ icon: "share", onPress: () => true }}
+        // right={{ icon: "share", onPress: () => true }}
       />
       <Box padding="m" flex={1}>
         <Box
@@ -99,13 +109,15 @@ const TransactionHistory = ({
             <Text color="primary">All time</Text>
           </Box>
         </Box>
-
         <Graph
           data={data}
           startDate={startDate}
           numberOfMonths={numberOfMonths}
         />
-        <ScrollView contentContainerStyle={{paddingBottom: footerHeight}} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: footerHeight }}
+          showsVerticalScrollIndicator={false}
+        >
           {formattedHistory.map((transaction, i) => (
             <Transaction key={i} transaction={transaction} />
           ))}

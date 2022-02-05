@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { TouchableWithoutFeedback, View } from "react-native";
 import React from "react";
 import { DataPoint } from "./Graph";
 import { Box, Text } from "../../components/Theme";
@@ -25,10 +25,12 @@ const Transaction = ({ transaction }: TransactionProps) => {
           />
           <Text variant="title3">TransactionID#{transaction.id}</Text>
         </Box>
-        <Text color="darkGrey">{`$${transaction.totalPrice} - ${moment(transaction.date).format("DD MMM, YYYY")}`}</Text>
+        <Text color="darkGrey">{`$${transaction.value} - ${moment(transaction.date).format("DD MMM, YYYY")}`}</Text>
       </Box>
       <Box>
-        <Text color="secondary" variant="button">See more</Text>
+        <TouchableWithoutFeedback onPress={() => console.log('test')}>
+          <Text color="secondary" variant="button">See more</Text>
+        </TouchableWithoutFeedback>
       </Box>
     </Box>
   );

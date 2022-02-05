@@ -1,6 +1,7 @@
 import {
   CommonActions,
   DrawerActions,
+  StackActions,
   useNavigation,
 } from "@react-navigation/native";
 import React, { useContext } from "react";
@@ -15,11 +16,10 @@ const { width } = Dimensions.get("window");
 export const DRAWER_WIDTH = width * 0.85;
 const height = DRAWER_WIDTH * aspectRatio;
 
-
 const items: DrawerItemProps[] = [
   {
     icon: "zap",
-    label: "Outfit Ideas",
+    label: "Product List",
     screen: "OutfitIdeas",
     color: "primary",
   },
@@ -68,6 +68,9 @@ const items: DrawerItemProps[] = [
           );
         })
         .catch((err: any) => {
+          navigation.dispatch(
+            StackActions.replace("Authentication", { screen: "Login" })
+          );
           console.log(err);
         });
     },

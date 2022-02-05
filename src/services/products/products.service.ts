@@ -14,3 +14,16 @@ export const productsRequest = () => {
     })
 }
 
+export const productSearchRequest = (keyword: string) => {
+    return new Promise<any>(async (resolve, reject) => {
+        
+        await baseUrlAxios.get(`products/search`,{ params: { keyword: keyword } }
+        ).then((data: any) => {
+            // console.log(data)
+            resolve(data)
+        }).catch((err: any) => {
+            reject(err)
+        });
+
+    })
+}

@@ -1,11 +1,11 @@
 import { createContext, useState } from "react";
+import { Alert } from "react-native";
 import { getValueFor } from "../authentication/auth.service";
 import { createTransactionRequest, getAllTransactionRequest } from "./transaction.service";
 
 export const TransactionContext = createContext({});
 
 export const TransactionContextProvider = ({ children }: any) => {
-  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const getTransactions  = async () => {
@@ -20,6 +20,10 @@ export const TransactionContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+          }
           reject(err);
         });
     });
@@ -37,6 +41,10 @@ export const TransactionContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+          }
           reject(err);
         });
     });

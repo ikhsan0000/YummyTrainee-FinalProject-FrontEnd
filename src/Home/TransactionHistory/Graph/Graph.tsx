@@ -15,7 +15,7 @@ const AnimatedBox = Animated.createAnimatedComponent(Box);
 
 export interface DataPoint {
   date: number;
-  totalPrice: number;
+  value: number;
   id: number;
 }
 

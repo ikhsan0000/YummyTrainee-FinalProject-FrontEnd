@@ -1,8 +1,10 @@
 import { createContext, useState } from "react";
+import { Alert } from "react-native";
 import { getValueFor } from "../authentication/auth.service";
 import {
   addToCartRequest,
   cartDetailRequest,
+  deleteItemRequest,
   editQuantityRequest,
   oneCartDetailRequest,
 } from "./cart.service";
@@ -10,9 +12,7 @@ import {
 export const CartContext = createContext({});
 
 export const CartContextProvider = ({ children }: any) => {
-  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [cart, setCart] = useState();
 
   const addToCart = async (data: any) => {
     const aToken = await getValueFor("aToken");
@@ -25,6 +25,10 @@ export const CartContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+          }          
           reject(err);
         });
     });
@@ -41,6 +45,10 @@ export const CartContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+          }
           reject(err);
         });
     });
@@ -57,6 +65,10 @@ export const CartContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+          }
           reject(err);
         });
     });
@@ -73,6 +85,30 @@ export const CartContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+          }
+          reject(err);
+        });
+    });
+  };
+
+  const deleteItem = async (cartItemId: number) => {
+    const aToken = await getValueFor("aToken");
+    return new Promise<void>(async (resolve, reject) => {
+      setIsLoading(true);
+      await deleteItemRequest(aToken, cartItemId)
+        .then(() => {
+          setIsLoading(false);
+          resolve();
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+          }
           reject(err);
         });
     });
@@ -85,6 +121,7 @@ export const CartContextProvider = ({ children }: any) => {
         cartDetail,
         oneCartDetail,
         editQuantity,
+        deleteItem,
         isLoading,
       }}
     >

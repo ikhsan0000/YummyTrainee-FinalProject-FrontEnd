@@ -6,7 +6,7 @@ import { useTheme } from "@shopify/restyle";
 import AddCard from "./AddCard";
 import { CARD_HEIGHT } from "./CardLayout";
 import { Button } from "../../components";
-import { useNavigation } from "@react-navigation/native";
+import { StackActions, useNavigation } from "@react-navigation/native";
 import { TransactionContext } from "../../services/transaction/transaction.context";
 
 const cards = [
@@ -71,7 +71,13 @@ const Checkout = ({ minHeight, cartDetail }: CheckoutProps) => {
   }
 
   const onSubmit = async () => {
-    await createTransaction(dataTransaction)
+    try{
+      await createTransaction(dataTransaction)
+    } catch {
+      navigation.dispatch(
+        StackActions.replace('Authentication', { screen: 'Login' })
+      );
+    }
   }
 
 

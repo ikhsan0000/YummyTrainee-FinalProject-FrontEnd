@@ -15,6 +15,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Box, Text } from "../../components/Theme";
 import RoundedIcon from "../../Authentication/components/RoundedIcon";
 import { CartContext } from "../../services/cart/cart.context";
+import { StackActions, useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 const finalDest = width;
@@ -44,6 +45,8 @@ const SwipeableRow = ({
   const { editQuantity, oneCartDetail, isLoading }: any =
     useContext(CartContext);
 
+  const navigation = useNavigation()
+
   const updateQty = async (type: string) => {
     const currentQty = await oneCartDetail(cartItemId)
       .then((res: any) => {
@@ -51,6 +54,9 @@ const SwipeableRow = ({
       })
       .catch((err: any) => {
         console.error(err);
+        navigation.dispatch(
+          StackActions.replace('Authentication', { screen: 'Login' })
+        );
       });
     let reqData;
     if (type === "add") {

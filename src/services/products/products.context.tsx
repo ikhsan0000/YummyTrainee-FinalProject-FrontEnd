@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
-import { productsRequest } from "./products.service";
+import { Alert } from "react-native";
+import { productSearchRequest, productsRequest } from "./products.service";
 
 export const ProductsContext = createContext({});
 
@@ -12,24 +13,42 @@ export const ProductsContextProvider = ({ children }: any) => {
     return new Promise<void>(async (resolve, reject) => {
       setIsLoading(true);
       await productsRequest()
-        .then((data) => {
-          setProducts(data.data);
+        .then((res) => {
+          setProducts(res.data);
           setIsLoading(false);
           resolve();
         })
-        .catch((error) => {
+        .catch((err) => {
           setIsLoading(false);
-          setError(error)
-          reject(error);
+          setError(err)
+          reject(err);
         });
     });
   };
+
+  const searchProducts = (keyword: string) => {
+    return new Promise<void>(async (resolve, reject) => {
+      setIsLoading(true)
+      await productSearchRequest(keyword)
+      .then((res) => { 
+        setProducts(res.data);
+        setIsLoading(false);
+          resolve();
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          setError(err)
+          reject(err);
+        });
+    })
+  }
 
 
   return (
     <ProductsContext.Provider
       value={{
         retriveAllProducts,
+        searchProducts,
         isLoading,
         error,
         products

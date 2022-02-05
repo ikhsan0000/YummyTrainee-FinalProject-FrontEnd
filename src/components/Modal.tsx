@@ -1,24 +1,38 @@
-import { View, Text, Modal } from 'react-native';
-import React from 'react';
+import { TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Box, Text } from "./Theme";
+import { Button } from ".";
+import Modal from "react-native-modal";
+import ModalButton from "./ModalButton";
+import { useNavigation } from "@react-navigation/native";
 
 interface ModalBoxProps {
-    modalVisible: boolean
+  trigger: boolean;
+  label: string;
+  closeModal: () => void;
+  buttons: any;
 }
 
+const ModalBox = ({ label, trigger, closeModal, buttons}: ModalBoxProps) => {
 
-const ModalBox = ({modalVisible}: ) => {
   return (
     <>
-        <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-         
-        }}
+      <Modal isVisible={trigger} onBackdropPress={() => closeModal()}>
+        <Box
+          flex={0.2}
+          alignItems="center"
+          justifyContent="center"
+          backgroundColor="grey"
+          borderRadius="l"
         >
+          <Box paddingBottom="m">
+            <Text variant="title3">{label}</Text>
+          </Box>
 
-        </Modal>
+          {buttons && buttons}
+
+        </Box>
+      </Modal>
     </>
   );
 };

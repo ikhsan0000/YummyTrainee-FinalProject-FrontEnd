@@ -7,8 +7,8 @@ import {
 import { Text } from "../../components";
 import { Box } from "../../components/Theme";
 
-const OUTER_RADIUS = 34;
-const INNER_RADIUS = 30;
+const OUTER_RADIUS = 25;
+const INNER_RADIUS = 21;
 
 interface CategoryProps {
   category: {
@@ -22,9 +22,11 @@ const Category = ({ category: { color, title } }: CategoryProps) => {
   const [selected, setSelected] = useState(false);
 
   return (
-    <BorderlessButton onPress={() => setSelected((prev) => !prev)}>
-      <Box margin="m" alignItems="center">
-        
+    <BorderlessButton
+      rippleColor="rgba(0,0,128,0.05)"
+      onPress={() => setSelected((prev) => !prev)}
+    >
+      <Box marginVertical="s" marginHorizontal="m" alignItems="center">
         <Box
           width={OUTER_RADIUS * 2}
           height={OUTER_RADIUS * 2}
@@ -37,7 +39,7 @@ const Category = ({ category: { color, title } }: CategoryProps) => {
                 ...StyleSheet.absoluteFillObject,
                 borderRadius: OUTER_RADIUS,
                 borderColor: color,
-                borderWidth: 2
+                borderWidth: 2,
               }}
             />
           )}
@@ -51,9 +53,9 @@ const Category = ({ category: { color, title } }: CategoryProps) => {
           />
         </Box>
 
-          <Text textAlign="center" variant="header">
-            {title}
-          </Text>
+        <Text textAlign="center" variant="header">
+          {title}
+        </Text>
       </Box>
     </BorderlessButton>
   );

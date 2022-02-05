@@ -42,7 +42,7 @@ export const oneCartDetailRequest = (aToken: any, id: any) => {
     })
 }
 
-export const editQuantityRequest = (aToken:any, data: any) => {
+export const editQuantityRequest = (aToken:string, data: any) => {
     return new Promise<any>(async (resolve, reject) => {
         
         await baseUrlAxios.patch('cart', data,
@@ -53,5 +53,18 @@ export const editQuantityRequest = (aToken:any, data: any) => {
             reject(err)
         });
 
+    })
+}
+
+export const deleteItemRequest = (aToken:string, cartItemId: any) => {
+    return new Promise<void>(async (resolve, reject) => {
+        console.log(cartItemId)
+        await baseUrlAxios.delete(`cart/${cartItemId}`,
+        {headers: { Authorization: `Bearer ${aToken}` } }
+        ).then(() => {
+            resolve()
+        }).catch((err: any) => {
+            reject(err)
+        })
     })
 }
