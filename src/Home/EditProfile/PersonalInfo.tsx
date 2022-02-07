@@ -22,11 +22,18 @@ interface PersonalInfoProps {
   navigation: any
 }
 
-const PersonalInfo = ({profile, navigation}: PersonalInfoProps) => {
+const PersonalInfo = ({navigation}: PersonalInfoProps) => {
 
   // Profile Context
-  const { updateProfile, isLoading, changePassword }:any = useContext(ProfileContext)
-  
+  const { updateProfile, currentUserProfile, isLoading, changePassword, profile }:any = useContext(ProfileContext)
+  useEffect(async () => {
+    try{
+      await currentUserProfile()
+    } catch(err) {
+      console.log(err)
+    }
+  }, [])
+
   // YUP
   const formSchemaProfile = Yup.object().shape({
     fullName: Yup.string().required("Full Name is required"),

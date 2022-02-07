@@ -1,4 +1,7 @@
+import { StackActions, useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import { Alert } from "react-native";
+
 
 export const baseUrlAxios = axios.create({
     baseURL: "http://192.168.0.172:3000/",
@@ -7,21 +10,20 @@ export const baseUrlAxios = axios.create({
     },
 })
 
+
 // baseUrlAxios.interceptors.response.use((res) => {
 //     return res
-//     },
+// },
 //     async (err) => {
-//         const rToken = await getValueFor('rToken')
-//         return new Promise<any>(async (resolve, reject) => {
-
-//             await baseUrlAxios.post('auth/refresh',{},
-//             {headers: { Authorization: `Bearer ${rToken}` } }
-//             ).then((data: any) => {
-//                 resolve(data)
-//             }).catch((err: any) => {
-//                 reject(err)
-//             });
-    
-//         })
+//         const navigation = useNavigation()
+//         if (err.response.status === 401) {
+//             Alert.alert("session expired, please log in again");
+//             navigation.dispatch(
+//                 StackActions.replace("Authentication", { screen: "Login" })
+//             );
+//         }
+//         else { 
+//             return err
+//         }
 //     }
 // )

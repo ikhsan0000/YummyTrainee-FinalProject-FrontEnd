@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import { Button } from "../../components";
-import { Box } from "../../components/Theme";
+import { Box, Text } from "../../components/Theme";
 
 interface FooterProps {
   label: string;
@@ -11,8 +11,8 @@ interface FooterProps {
 const Footer = ({ label, onPress }: FooterProps) => {
   return (
     <Box backgroundColor="secondary" padding="m" borderTopLeftRadius="xl">
-      <Box alignItems="center" paddingBottom="l">
-        <Button variant="primary" label={label} onPress={onPress} />
+      <Box alignItems="center">
+        <Text color="grey" variant="header">MAKE YOUR WISH COME TRUE</Text>
       </Box>
     </Box>
   );

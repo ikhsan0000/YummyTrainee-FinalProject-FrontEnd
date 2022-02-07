@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Box, Text } from "../../components/Theme";
-import { Alert, Dimensions, Image } from "react-native";
+import { Alert, BackHandler, Dimensions, Image } from "react-native";
 import { Card } from "react-native-elements";
 import { useTheme } from "@shopify/restyle";
 import ProductCard from "./ProductCard";
@@ -12,28 +12,43 @@ import CheckboxGroup from "../EditProfile/CheckboxGroup";
 import Modal from "../../components/Modal";
 import ModalBox from "../../components/Modal";
 import ModalButtons from "./ModalButtons";
-import { StackActions } from "@react-navigation/native";
+import { StackActions, useFocusEffect } from "@react-navigation/native";
+import { SliderBox } from "react-native-image-slider-box";
+import ModalWishlistButtons from "./ModalWishlistButton";
+import { ProfileContext } from "../../services/profile/profile.context";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
-const ProductDetail = ({ navigation, route }: any) => {
-  const { product } = route.params;
+const ProductDetail = ({ navigation, route, }: any) => {
+  const { product, favorite } = route.params;
   const [quantity, setQuantity] = useState(1);
-  const [showModal, setShowModal] = useState(false);
-  const imgUrl = product.productImage[0].fileName;
-  // const [selectedSize, setSelectedSize] = useState('')
+  const baseImgUrl = "http://192.168.0.172:3000/products/images/";
+  const imgUrl = product.productImage.map((img) => {
+    return baseImgUrl + img.fileName;
+  });
+  const theme = useTheme();
+  
+  // add to cart modal
   const closeModal = () => {
     setShowModal(false);
-  }
+  };
+  const [showModal, setShowModal] = useState(false);
+  
+  // wishlist modal
+  const closeModalWishlist = () => {
+    setShowModalWishlist(false);
+  };
+  const [showModalWishlist, setShowModalWishlist] = useState(false);
 
   // Cart Context
   const { addToCart, isLoading }: any = useContext(CartContext);
+  const { addToFavorite }: any = useContext(ProfileContext);
 
   let currentProductToCart = {
     productId: product.id,
     quantity: quantity,
     size: product.sizes[0].name,
-    image: imgUrl,
+    image: product.productImage[0].fileName,
   };
 
   const subtractQty = () => {
@@ -48,29 +63,76 @@ const ProductDetail = ({ navigation, route }: any) => {
   };
 
   const onSizeChange = (size: string) => {
-      // setSelectedSize(size)
-      currentProductToCart.size = size
-  }
-
+    // setSelectedSize(size)
+    currentProductToCart.size = size;
+  };
 
   const onSubmit = async () => {
     await addToCart(currentProductToCart)
-      .then(setShowModal(true))
+      .then(() => setShowModal(true))
       .catch((err: any) => {
-        console.log(err)
-        navigation.dispatch(
-          StackActions.replace('Authentication', { screen: 'Login' })
-        );
+        console.log(err);
+        // navigation.dispatch(
+        //   StackActions.replace("Authentication", { screen: "Login" })
+        // );
       });
   };
 
-  const formattedSizes = product.sizes.map(({name}: any) => {
-      return {value:name, label: name}
-  })
-  
+  const onAddToWishlist = async () => {
+    await addToFavorite(product.id)
+    .then(() => setShowModalWishlist(true))
+    .catch((err: any) => {
+      console.log(err);
+      navigation.dispatch(
+        StackActions.replace("Authentication", { screen: "Login" })
+      );
+    });
+  }
+
+  const formattedSizes = product.sizes.map(({ name }: any) => {
+    return { value: name, label: name };
+  });
+
+  const backNavigation = () => {
+    if(favorite){
+      navigation.navigate("FavouriteOutfits")
+    }
+    else{ 
+      navigation.navigate("OutfitIdeas")
+    }
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = ():any => {
+        if(favorite){
+          navigation.navigate("FavouriteOutfits")
+          return true
+        }
+        
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [])
+  );
+
   return (
     <Box flex={1} backgroundColor="white">
-      <ModalBox trigger={showModal} closeModal={closeModal} label="Item added to cart" buttons={<ModalButtons />}/>
+      <ModalBox
+        trigger={showModal}
+        closeModal={closeModal}
+        label="Item added to cart"
+        buttons={<ModalButtons />}
+      />
+      <ModalBox
+        trigger={showModalWishlist}
+        closeModal={closeModalWishlist}
+        label="Added to Wishlist"
+        buttons={<ModalWishlistButtons closeModal={closeModalWishlist} />}
+      />
       <Box
         zIndex={99}
         position="absolute"
@@ -81,7 +143,7 @@ const ProductDetail = ({ navigation, route }: any) => {
       >
         <RectButton
           rippleColor="rgba(0,0,0,0)"
-          onPress={() => navigation.navigate("OutfitIdeas")}
+          onPress={() => backNavigation()}
         >
           <RoundedIcon
             name="arrow-left"
@@ -93,16 +155,18 @@ const ProductDetail = ({ navigation, route }: any) => {
         </RectButton>
       </Box>
 
-      <Image
+      {/* <Image
         style={{ flex: 0.4 }}
         resizeMode="cover"
         source={{ uri: `http://192.168.0.172:3000/products/images/${imgUrl}` }}
-      />
+      /> */}
+      <Box flex={0.4}>
+        <SliderBox images={imgUrl} sliderBoxHeight={height * 0.4} imageLoader />
+      </Box>
       <Box padding="m" flex={0.4}>
         <Text variant="title2">{product.name}</Text>
         {/* <Box flex={1} width={100} backgroundColor="secondary"/>  */}
         <Text variant="title1">$ {product.price}</Text>
-
 
         <Text variant="body" color="darkGrey" fontSize={14}>
           Brand : {product.brand.name}
@@ -113,11 +177,18 @@ const ProductDetail = ({ navigation, route }: any) => {
         <Box flexDirection="row" paddingVertical="s" alignItems="center">
           <Text variant="title3">sizes available: </Text>
           <Box marginLeft="m" />
-          <CheckboxGroup options={formattedSizes} radio defaultSelected={product.sizes[0].name} callback={onSizeChange} />
+          <CheckboxGroup
+            options={formattedSizes}
+            radio
+            defaultSelected={product.sizes[0].name}
+            callback={onSizeChange}
+          />
         </Box>
 
         <Box flex={0.01} backgroundColor="primary" />
-        <Text variant="title3" color="darkGrey" fontSize={14}>Seller's description:</Text>
+        <Text variant="title3" color="darkGrey" fontSize={14}>
+          Seller's description:
+        </Text>
         <Text variant="body">{product.description}</Text>
       </Box>
 
@@ -165,14 +236,25 @@ const ProductDetail = ({ navigation, route }: any) => {
           </Box>
         </Box>
 
-        <Button
-          icon="shopping-cart"
-          variant="primary"
-          label="Add to Cart"
-          style={{ width: width / 1.5 }}
-          isLoading={isLoading}
-          onPress={() => onSubmit()}
-        />
+        <Box flexDirection="row">
+          <Button
+            icon="heart"
+            variant="secondary"
+            label="Wishlist "
+            style={{ width: width * 0.3 }}
+            isLoading={isLoading}
+            onPress={() => onAddToWishlist()}
+          />
+          <Box style={{ width: width * 0.1 }} />
+          <Button
+            icon="shopping-cart"
+            variant="primary"
+            label="Add to Cart"
+            style={{ width: width * 0.5 }}
+            isLoading={isLoading}
+            onPress={() => onSubmit()}
+          />
+        </Box>
       </Box>
     </Box>
   );

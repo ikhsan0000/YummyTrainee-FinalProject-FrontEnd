@@ -26,7 +26,7 @@ const items: DrawerItemProps[] = [
   },
   {
     icon: "heart",
-    label: "Favourite Outfits",
+    label: "Wishlist",
     screen: "FavouriteOutfits",
     color: "orange",
   },
@@ -82,7 +82,14 @@ const Drawer = () => {
   // const [profile, setProfile] = useState({})
   
   // Profile Context
-  const { profile }:any = useContext(ProfileContext)  
+  const { profile, currentUserProfile }:any = useContext(ProfileContext)
+  useEffect(async () => {
+    try{
+      await currentUserProfile()
+    } catch(err) {
+      console.log(err)
+    }
+  }, [])
 
   return (
     <Box flex={1}>

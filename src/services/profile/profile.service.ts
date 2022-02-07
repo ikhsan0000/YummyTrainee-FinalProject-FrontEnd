@@ -36,3 +36,15 @@ export const updateProfileRequest = (aToken: any, data: any) => {
         });
     })
 }
+
+export const addToFavoriteRequest = (aToken: any, productId: any) => {
+    return new Promise<any>(async (resolve, reject) => {
+        await baseUrlAxios.patch(`user-profile/favorite/${productId}`, {},
+        {headers: { Authorization: `Bearer ${aToken}` } }
+        ).then((data: any) => {
+            resolve(data)
+        }).catch((err: any) => {
+            reject(err)
+        });
+    })
+}

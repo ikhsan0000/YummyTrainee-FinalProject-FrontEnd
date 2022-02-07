@@ -46,12 +46,11 @@ const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
           transparent
         />
       </Box>
-      <Box flex={1} backgroundColor="violet">
+      <Box flex={1}>
         <ScrollView
           style={{
             borderBottomLeftRadius: theme.borderRadii.xl,
             borderBottomRightRadius: theme.borderRadii.xl,
-            backgroundColor: theme.colors.yellow
           }}
           contentContainerStyle={{ paddingVertical: 50 * aspectRatio }}
           showsVerticalScrollIndicator={false}

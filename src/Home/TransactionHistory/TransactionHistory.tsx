@@ -109,11 +109,11 @@ const TransactionHistory = ({
             <Text color="primary">All time</Text>
           </Box>
         </Box>
-        <Graph
+        {/* <Graph
           data={data}
           startDate={startDate}
           numberOfMonths={numberOfMonths}
-        />
+        /> */}
         <ScrollView
           contentContainerStyle={{ paddingBottom: footerHeight }}
           showsVerticalScrollIndicator={false}

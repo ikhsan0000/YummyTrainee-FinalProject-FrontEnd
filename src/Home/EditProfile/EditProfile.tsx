@@ -26,9 +26,6 @@ const EditProfile = ({ navigation }: HomeNavigationProps<"EditProfile">) => {
       await currentUserProfile()
     } catch(err) {
       console.log(err)
-      navigation.dispatch(
-        StackActions.replace('Authentication', { screen: 'Login' })
-      );
     }
   }, [])
 
@@ -89,7 +86,7 @@ const EditProfile = ({ navigation }: HomeNavigationProps<"EditProfile">) => {
         
         <Tabs tabs={tabs}>
           <Configuration />
-          <PersonalInfo profile={profile} />
+          <PersonalInfo />
         </Tabs>
         </Box>
       </Box>

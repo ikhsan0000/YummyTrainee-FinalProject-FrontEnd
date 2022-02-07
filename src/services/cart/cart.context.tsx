@@ -1,3 +1,4 @@
+import { StackActions, useNavigation } from "@react-navigation/native";
 import { createContext, useState } from "react";
 import { Alert } from "react-native";
 import { getValueFor } from "../authentication/auth.service";
@@ -13,6 +14,7 @@ export const CartContext = createContext({});
 
 export const CartContextProvider = ({ children }: any) => {
   const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigation()
 
   const addToCart = async (data: any) => {
     const aToken = await getValueFor("aToken");
@@ -28,6 +30,9 @@ export const CartContextProvider = ({ children }: any) => {
           if(err.response.status === 401)
           {
             Alert.alert("session expired, please log in again");
+            navigation.dispatch(
+              StackActions.replace("Authentication", { screen: "Login" })
+            );
           }          
           reject(err);
         });

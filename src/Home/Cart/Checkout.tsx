@@ -85,8 +85,8 @@ const Checkout = ({ minHeight, cartDetail }: CheckoutProps) => {
 
   const onSubmit = async () => {
     try {
-      setShowModal(true)
       await createTransaction(dataTransaction);
+      setShowModal(true)
     } catch {
       navigation.dispatch(
         StackActions.replace("Authentication", { screen: "Login" })
