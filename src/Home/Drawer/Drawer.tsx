@@ -4,11 +4,12 @@ import {
   StackActions,
   useNavigation,
 } from "@react-navigation/native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Image, Dimensions, StyleSheet } from "react-native";
 import { Header } from "../../components";
 import theme, { Box, Text } from "../../components/Theme";
 import { AuthContext } from "../../services/authentication/auth.context";
+import { ProfileContext } from "../../services/profile/profile.context";
 import DrawerItem, { DrawerItemProps } from "./DrawerItem";
 
 const aspectRatio = 750 / 1125;
@@ -61,10 +62,7 @@ const items: DrawerItemProps[] = [
       onLogout()
         .then((data: any) => {
           navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: "Authentication" }],
-            })
+            StackActions.replace("Authentication", { screen: "Login" })
           );
         })
         .catch((err: any) => {
@@ -80,6 +78,11 @@ const items: DrawerItemProps[] = [
 
 const Drawer = () => {
   const navigation = useNavigation();
+
+  // const [profile, setProfile] = useState({})
+  
+  // Profile Context
+  const { profile }:any = useContext(ProfileContext)  
 
   return (
     <Box flex={1}>
@@ -146,11 +149,10 @@ const Drawer = () => {
 
           <Box marginBottom="s" top={-20}>
             <Text variant="title1" fontSize={24} textAlign="center">
-              Ikhsan Firdauz
+              {profile && profile.fullName}
             </Text>
-
             <Text variant="body" textAlign="center" fontSize={14}>
-              ikhsanfirdauz000@gmail.com
+              {profile && profile.user.email}
             </Text>
 
             {items.map((item, index) => (

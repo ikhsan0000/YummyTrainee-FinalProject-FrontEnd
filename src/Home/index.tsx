@@ -8,9 +8,13 @@ import EditProfile from "./EditProfile";
 import NotificationSettings from "./NotificationSettings";
 import Cart from "./Cart";
 import ProductDetail from "./OutfitIdeas/ProductDetail";
+import { useContext, useEffect } from "react";
+import { ProfileContext } from "../services/profile/profile.context";
+import { StackActions } from "@react-navigation/native";
 
 const Drawer = createDrawerNavigator<HomeRoutes>();
-export const HomeNavigator = () => {
+export const HomeNavigator = ({navigator}: any) => {
+
   return (
     <Drawer.Navigator
       drawerContent={() => <DrawerContent />}
@@ -48,6 +52,7 @@ export const HomeNavigator = () => {
         component={EditProfile}
         options={{
           headerShown: false,
+          unmountOnBlur:true
         }}
       />
 

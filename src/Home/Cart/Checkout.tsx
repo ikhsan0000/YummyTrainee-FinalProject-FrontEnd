@@ -1,5 +1,5 @@
 import { ScrollView, TouchableWithoutFeedback, View } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Text } from "../../components/Theme";
 import Card, { CardType } from "./Card";
 import { useTheme } from "@shopify/restyle";
@@ -8,6 +8,9 @@ import { CARD_HEIGHT } from "./CardLayout";
 import { Button } from "../../components";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import { TransactionContext } from "../../services/transaction/transaction.context";
+import { ProfileContext } from "../../services/profile/profile.context";
+import ModalBox from "../../components/Modal";
+import ModalButtons from "./ModalButton";
 
 const cards = [
   {
@@ -48,41 +51,58 @@ const LineItem = ({ label, value }: LineItemProps) => {
 
 interface CheckoutProps {
   minHeight: number;
-  cartDetail: any
+  cartDetail: any;
 }
 
 const Checkout = ({ minHeight, cartDetail }: CheckoutProps) => {
   const [selectedCard, setSelectedCard] = useState(cards[0].id);
   const navigation = useNavigation();
-  const { createTransaction, isLoading }:any = useContext(TransactionContext)
+  const { createTransaction, isLoading }: any = useContext(TransactionContext);
+  const { profile }: any = useContext(ProfileContext);
 
-  const totalItem = `Total Items (${cartDetail.length})`
-  const shippingFee = 4
-  let totalPrice = 0
+  const totalItem = `Total Items (${cartDetail.length})`;
+  const shippingFee = 4;
+  let totalPrice = 0;
   cartDetail.forEach((item: any) => {
-    totalPrice += item.product.price * item.quantity
-  })
-  const totalPaymentLabel = `Pay for $${totalPrice + shippingFee}`
+    totalPrice += item.product.price * item.quantity;
+  });
+
+  const totalPaymentLabel = `Pay for $${totalPrice + shippingFee}`;
+  const totalPayment = totalPrice + shippingFee;
 
   const dataTransaction = {
-    address: '1545 Blvd. Cote-Vertu Ouest',
-    totalPrice,
-    shippingFee
-  }
+    address: profile && profile.address,
+    totalPrice: totalPayment,
+    shippingFee,
+  };
+
+  // modal handling
+  const [showModal, setShowModal] = useState(false);
+  const closeModal = () => {
+    setShowModal(false);
+    navigation.navigate("OutfitIdeas")
+  };
 
   const onSubmit = async () => {
-    try{
-      await createTransaction(dataTransaction)
+    try {
+      setShowModal(true)
+      await createTransaction(dataTransaction);
     } catch {
       navigation.dispatch(
-        StackActions.replace('Authentication', { screen: 'Login' })
+        StackActions.replace("Authentication", { screen: "Login" })
       );
     }
-  }
-
+  };
 
   return (
     <Box flex={1} backgroundColor="secondary" style={{ paddingTop: minHeight }}>
+      <ModalBox
+        trigger={showModal}
+        closeModal={closeModal}
+        label="Transaction Successfull"
+        buttons={<ModalButtons closeModal={closeModal} />}
+      />
+
       <Box flex={1} padding="m">
         <Box height={CARD_HEIGHT}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -104,11 +124,12 @@ const Checkout = ({ minHeight, cartDetail }: CheckoutProps) => {
           </Text>
           <Box flexDirection="row" opacity={0.5} paddingVertical="m">
             <Box flex={1}>
-              <Text color="white">1545 Blvd. Cote-Vertu Ouest</Text>
-              <Text color="white">Montreal, Quebec</Text>
+              <Text color="white">{profile && profile.address}</Text>
             </Box>
-  
-            <TouchableWithoutFeedback onPress={() => navigation.navigate("EditProfile")}>
+
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate("EditProfile")}
+            >
               <Box justifyContent="center" alignItems="center">
                 <Text color="white">Change</Text>
               </Box>
@@ -133,7 +154,6 @@ const Checkout = ({ minHeight, cartDetail }: CheckoutProps) => {
             onPress={() => onSubmit()}
           />
         </Box>
-
       </Box>
     </Box>
   );

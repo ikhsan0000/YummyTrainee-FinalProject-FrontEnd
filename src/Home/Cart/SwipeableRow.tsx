@@ -60,9 +60,9 @@ const SwipeableRow = ({
       });
     let reqData;
     if (type === "add") {
-      reqData = { id: cartItemId, quantity: currentQty + 1 };
+      reqData = { cartToProductId: cartItemId, quantity: currentQty + 1 };
     } else if (type === "subtract") {
-      reqData = { id: cartItemId, quantity: currentQty - 1 };
+      reqData = { cartToProductId: cartItemId, quantity: currentQty - 1 };
     }
 
     await editQuantity(reqData);

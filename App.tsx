@@ -12,6 +12,7 @@ import { AuthContextProvider } from "./src/services/authentication/auth.context"
 import { ProductsContextProvider } from "./src/services/products/products.context";
 import { CartContextProvider } from "./src/services/cart/cart.context";
 import { TransactionContextProvider } from "./src/services/transaction/transaction.context";
+import { ProfileContextProvider } from "./src/services/profile/profile.context";
 
 const fonts = {
   "SFProDisplay-Bold": require("./assets/fonts/SF-Pro-Display-Bold.otf"),
@@ -31,23 +32,25 @@ export default function App() {
           <ProductsContextProvider>
             <TransactionContextProvider>
               <CartContextProvider>
-                <AppStack.Navigator>
-                  <AppStack.Screen
-                    name="Authentication"
-                    component={AuthenticationNavigator}
-                    options={{
-                      headerShown: false,
-                    }}
-                  />
+                <ProfileContextProvider>
+                  <AppStack.Navigator>
+                    <AppStack.Screen
+                      name="Authentication"
+                      component={AuthenticationNavigator}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
 
-                  <AppStack.Screen
-                    name="Home"
-                    component={HomeNavigator}
-                    options={{
-                      headerShown: false,
-                    }}
-                  />
-                </AppStack.Navigator>
+                    <AppStack.Screen
+                      name="Home"
+                      component={HomeNavigator}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                  </AppStack.Navigator>
+                </ProfileContextProvider>
               </CartContextProvider>
             </TransactionContextProvider>
           </ProductsContextProvider>
