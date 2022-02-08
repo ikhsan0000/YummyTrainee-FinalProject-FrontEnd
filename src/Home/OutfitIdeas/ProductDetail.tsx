@@ -102,6 +102,7 @@ const ProductDetail = ({ navigation, route, }: any) => {
     }
   }
 
+  // Back Button Handler
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = ():any => {

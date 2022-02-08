@@ -4,11 +4,8 @@ import { DataPoint } from "./Graph";
 import { Box, Text } from "../../components/Theme";
 import moment from "moment";
 
-interface TransactionProps {
-  transaction: DataPoint;
-}
 
-const Transaction = ({ transaction }: TransactionProps) => {
+const Transaction = ({ transaction, navigation }: any) => {
   return (
     <Box
       marginTop="l"
@@ -28,7 +25,7 @@ const Transaction = ({ transaction }: TransactionProps) => {
         <Text color="darkGrey">{`$${transaction.value} - ${moment(transaction.date).format("DD MMM, YYYY")}`}</Text>
       </Box>
       <Box>
-        <TouchableWithoutFeedback onPress={() => console.log('test')}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate("TransactionHistoryDetail", {transaction: transaction})}>
           <Text color="secondary" variant="button">See more</Text>
         </TouchableWithoutFeedback>
       </Box>

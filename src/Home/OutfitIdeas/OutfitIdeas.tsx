@@ -26,19 +26,29 @@ import { Feather as Icon } from "@expo/vector-icons";
 
 const OutfitIdeas = ({ navigation }: HomeNavigationProps<"OutfitIdeas">) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [categoryFilter, setCategoryFilter] = useState('all');
   const aIndex = useTiming(currentIndex);
 
   // Product Context
-  const { products, retriveAllProducts, searchProducts, isLoading }: any =
+  const { products, retriveAllProducts, searchProducts, filterByCategory, isLoading }: any =
     useContext(ProductsContext);
     const [searchKeyword, setSearchKeyword] = useState('');
 
   useEffect(() => {
-    retriveAllProducts();
-  }, []);
+    if(categoryFilter == 'all'){
+      retriveAllProducts();
+    }
+    else{
+      filterByCategory(categoryFilter)
+    }
+  }, [categoryFilter]);
 
   const onSearch = (passedKeyword:string) => {
     searchProducts(passedKeyword)
+  }
+
+  const onCategoryChange = (category: string) => {
+      setCategoryFilter(category)
   }
 
   const renderItem = ({ item }: any) => (
@@ -81,7 +91,7 @@ const OutfitIdeas = ({ navigation }: HomeNavigationProps<"OutfitIdeas">) => {
         ></TextInput>
       </Box>
 
-      <Categories />
+      <Categories onCategoryChange={onCategoryChange}/>
 
       {isLoading ? (
         <ActivityIndicator animating={true} color={Colors.black} />

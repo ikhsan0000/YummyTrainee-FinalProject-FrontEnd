@@ -52,7 +52,7 @@ const TransactionHistory = ({
   navigation,
 }: HomeNavigationProps<"TransactionHistory">) => {
   // Transaction Context
-  const { getTransactions }: any = useContext(TransactionContext);
+  const { getTransactions, isLoading}: any = useContext(TransactionContext);
 
   const [history, setHistory] = useState([{}]);
 
@@ -84,7 +84,9 @@ const TransactionHistory = ({
     });
   }
 
-  const startDate = formattedHistory[0].createdAt;
+  if(formattedHistory.length > 0) {
+    const startDate = formattedHistory[0].createdAt;
+  }
 
   return (
     <Box flex={1} backgroundColor="white">
@@ -114,12 +116,14 @@ const TransactionHistory = ({
           startDate={startDate}
           numberOfMonths={numberOfMonths}
         /> */}
+        
+
         <ScrollView
           contentContainerStyle={{ paddingBottom: footerHeight }}
           showsVerticalScrollIndicator={false}
         >
           {formattedHistory.map((transaction, i) => (
-            <Transaction key={i} transaction={transaction} />
+            <Transaction key={i} transaction={transaction} navigation={navigation} />
           ))}
         </ScrollView>
       </Box>

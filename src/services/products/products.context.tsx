@@ -1,6 +1,10 @@
 import { createContext, useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { productSearchRequest, productsRequest } from "./products.service";
+import {
+  filterByCategoryRequest,
+  productSearchRequest,
+  productsRequest,
+} from "./products.service";
 
 export const ProductsContext = createContext({});
 
@@ -20,7 +24,7 @@ export const ProductsContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
-          setError(err)
+          setError(err);
           reject(err);
         });
     });
@@ -28,30 +32,47 @@ export const ProductsContextProvider = ({ children }: any) => {
 
   const searchProducts = (keyword: string) => {
     return new Promise<void>(async (resolve, reject) => {
-      setIsLoading(true)
+      setIsLoading(true);
       await productSearchRequest(keyword)
-      .then((res) => { 
-        setProducts(res.data);
-        setIsLoading(false);
+        .then((res) => {
+          setProducts(res.data);
+          setIsLoading(false);
           resolve();
         })
         .catch((err) => {
           setIsLoading(false);
-          setError(err)
+          setError(err);
           reject(err);
         });
-    })
-  }
+    });
+  };
 
+  const filterByCategory = (category: string) => {
+    return new Promise<void>(async (resolve, reject) => {
+      setIsLoading(true);
+      await filterByCategoryRequest(category)
+        .then((res) => {
+          setProducts(res.data);
+          setIsLoading(false);
+          resolve();
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          setError(err);
+          reject(err);
+        });
+    });
+  };
 
   return (
     <ProductsContext.Provider
       value={{
         retriveAllProducts,
+        filterByCategory,
         searchProducts,
         isLoading,
         error,
-        products
+        products,
       }}
     >
       {children}

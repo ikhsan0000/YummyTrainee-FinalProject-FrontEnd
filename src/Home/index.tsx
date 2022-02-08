@@ -11,6 +11,7 @@ import ProductDetail from "./OutfitIdeas/ProductDetail";
 import { useContext, useEffect } from "react";
 import { ProfileContext } from "../services/profile/profile.context";
 import { StackActions } from "@react-navigation/native";
+import TransactionHistoryDetail from "./TransactionHistory/TransactionHistoryDetail";
 
 const Drawer = createDrawerNavigator<HomeRoutes>();
 export const HomeNavigator = ({navigator}: any) => {
@@ -41,6 +42,15 @@ export const HomeNavigator = ({navigator}: any) => {
       <Drawer.Screen
         name="TransactionHistory"
         component={TransactionHistory}
+        options={{
+          headerShown: false,
+          unmountOnBlur:true
+        }}
+      />
+
+      <Drawer.Screen
+        name="TransactionHistoryDetail"
+        component={TransactionHistoryDetail}
         options={{
           headerShown: false,
           unmountOnBlur:true

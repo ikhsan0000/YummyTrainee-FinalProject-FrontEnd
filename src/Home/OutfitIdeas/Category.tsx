@@ -16,15 +16,17 @@ interface CategoryProps {
     title: string;
     id: string;
   };
+  onCategoryChange: (title:string) => void;
 }
 
-const Category = ({ category: { color, title } }: CategoryProps) => {
-  const [selected, setSelected] = useState(false);
+const Category = ({ category: { id, color, title }, onCategoryChange }: CategoryProps) => {
 
   return (
     <BorderlessButton
       rippleColor="rgba(0,0,128,0.05)"
-      onPress={() => setSelected((prev) => !prev)}
+      onPress={() => {
+        onCategoryChange(id)
+      }}
     >
       <Box marginVertical="s" marginHorizontal="m" alignItems="center">
         <Box
@@ -33,16 +35,7 @@ const Category = ({ category: { color, title } }: CategoryProps) => {
           justifyContent="center"
           alignItems="center"
         >
-          {selected && (
-            <View
-              style={{
-                ...StyleSheet.absoluteFillObject,
-                borderRadius: OUTER_RADIUS,
-                borderColor: color,
-                borderWidth: 2,
-              }}
-            />
-          )}
+         
           <View
             style={{
               width: INNER_RADIUS * 2,
