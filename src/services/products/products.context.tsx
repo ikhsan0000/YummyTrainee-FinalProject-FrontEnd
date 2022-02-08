@@ -1,3 +1,4 @@
+import { StackActions, useNavigation } from "@react-navigation/native";
 import { createContext, useEffect, useState } from "react";
 import { Alert } from "react-native";
 import {
@@ -9,6 +10,7 @@ import {
 export const ProductsContext = createContext({});
 
 export const ProductsContextProvider = ({ children }: any) => {
+  const navigation = useNavigation()
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState();
@@ -24,7 +26,14 @@ export const ProductsContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
-          setError(err);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+            navigation.dispatch(
+              StackActions.replace("Authentication", { screen: "Login" })
+            );
+          }
+          setError(err)
           reject(err);
         });
     });
@@ -41,6 +50,13 @@ export const ProductsContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+            navigation.dispatch(
+              StackActions.replace("Authentication", { screen: "Login" })
+            );
+          }  
           setError(err);
           reject(err);
         });
@@ -58,6 +74,13 @@ export const ProductsContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+            navigation.dispatch(
+              StackActions.replace("Authentication", { screen: "Login" })
+            );
+          }  
           setError(err);
           reject(err);
         });

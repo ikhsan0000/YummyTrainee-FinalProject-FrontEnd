@@ -1,4 +1,4 @@
-import { ScrollView, TouchableWithoutFeedback, View } from "react-native";
+import { Alert, ScrollView, TouchableWithoutFeedback, View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Text } from "../../components/Theme";
 import Card, { CardType } from "./Card";
@@ -85,6 +85,14 @@ const Checkout = ({ minHeight, cartDetail }: CheckoutProps) => {
 
   const onSubmit = async () => {
     try {
+      if(cartDetail.length == 0) {
+        Alert.alert("Please add some item to cart")
+        return 
+      }
+      else if(profile.address == ''){
+        Alert.alert("Please add your address")
+        return 
+      }
       await createTransaction(dataTransaction);
       setShowModal(true)
     } catch {

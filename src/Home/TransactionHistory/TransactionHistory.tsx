@@ -1,4 +1,4 @@
-import { ScrollView, View, Image, StyleSheet, Dimensions } from "react-native";
+import { ScrollView, View, Image, StyleSheet, Dimensions, ActivityIndicator } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Text } from "../../components/Theme";
 import { Header } from "../../components";
@@ -52,18 +52,16 @@ const TransactionHistory = ({
   navigation,
 }: HomeNavigationProps<"TransactionHistory">) => {
   // Transaction Context
-  const { getTransactions, isLoading}: any = useContext(TransactionContext);
+  const { getTransactions, isLoading }: any = useContext(TransactionContext);
 
   const [history, setHistory] = useState([{}]);
 
   useEffect(async () => {
-    try{
+    try {
       const retriveTransactionHistory = await getTransactions();
       setHistory(retriveTransactionHistory.data);
-    } catch {
-      navigation.dispatch(
-        StackActions.replace('Authentication', { screen: 'Login' })
-      );
+    } catch (err) {
+      console.log(err);
     }
   }, []);
 
@@ -84,7 +82,7 @@ const TransactionHistory = ({
     });
   }
 
-  if(formattedHistory.length > 0) {
+  if (formattedHistory.length > 0) {
     const startDate = formattedHistory[0].createdAt;
   }
 
@@ -105,7 +103,7 @@ const TransactionHistory = ({
             <Text variant="header" color="secondary" opacity={0.3}>
               TOTAL SPENT
             </Text>
-            <Text variant="title1">${totalSpent}</Text>
+            <Text variant="title1">${totalSpent >= 0 && totalSpent}</Text>
           </Box>
           <Box backgroundColor="primaryLight" borderRadius="m" padding="s">
             <Text color="primary">All time</Text>
@@ -116,15 +114,20 @@ const TransactionHistory = ({
           startDate={startDate}
           numberOfMonths={numberOfMonths}
         /> */}
-        
 
         <ScrollView
           contentContainerStyle={{ paddingBottom: footerHeight }}
           showsVerticalScrollIndicator={false}
         >
+
           {formattedHistory.map((transaction, i) => (
-            <Transaction key={i} transaction={transaction} navigation={navigation} />
+            <Transaction
+              key={i}
+              transaction={transaction}
+              navigation={navigation}
+            />
           ))}
+          
         </ScrollView>
       </Box>
       <TopCurve footerHeight={footerHeight} />

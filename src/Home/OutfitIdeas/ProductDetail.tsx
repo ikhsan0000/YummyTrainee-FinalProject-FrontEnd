@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Text } from "../../components/Theme";
 import { Alert, BackHandler, Dimensions, Image } from "react-native";
 import { Card } from "react-native-elements";
@@ -16,33 +16,55 @@ import { StackActions, useFocusEffect } from "@react-navigation/native";
 import { SliderBox } from "react-native-image-slider-box";
 import ModalWishlistButtons from "./ModalWishlistButton";
 import { ProfileContext } from "../../services/profile/profile.context";
+import WishlistButton from "../../components/WishlistButton";
 
 const { width, height } = Dimensions.get("window");
 
-const ProductDetail = ({ navigation, route, }: any) => {
+const ProductDetail = ({ navigation, route }: any) => {
   const { product, favorite } = route.params;
+  const { profile, currentUserProfile }: any = useContext(ProfileContext);
+  const [currentFav, setCurrentFav] = useState([]);
+  const [isFavorited, setIsFavorited] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const baseImgUrl = "http://192.168.0.172:3000/products/images/";
   const imgUrl = product.productImage.map((img) => {
     return baseImgUrl + img.fileName;
   });
   const theme = useTheme();
-  
+
+  // Set current favorites
+  useEffect(async () => {
+    await currentUserProfile().then(() => {
+      setCurrentFav(profile.userFavorites.product);
+    });
+  }, []);
+
+  // Check current favorite
+  useEffect(() => {
+    currentFav && currentFav.forEach((favoriteItem:any) => {
+      if (favoriteItem.id == product.id) {
+        setIsFavorited(true);
+      }
+    });
+  }, [currentFav])
+
   // add to cart modal
   const closeModal = () => {
     setShowModal(false);
   };
   const [showModal, setShowModal] = useState(false);
-  
+
   // wishlist modal
   const closeModalWishlist = () => {
     setShowModalWishlist(false);
   };
   const [showModalWishlist, setShowModalWishlist] = useState(false);
+  const [wishlistLabel, setWishlistLabel] = useState('')
 
   // Cart Context
   const { addToCart, isLoading }: any = useContext(CartContext);
-  const { addToFavorite }: any = useContext(ProfileContext);
+  // Profile Context
+  const { addToFavorite, removeFromFavorite }: any = useContext(ProfileContext);
 
   let currentProductToCart = {
     productId: product.id,
@@ -72,51 +94,64 @@ const ProductDetail = ({ navigation, route, }: any) => {
       .then(() => setShowModal(true))
       .catch((err: any) => {
         console.log(err);
-        // navigation.dispatch(
-        //   StackActions.replace("Authentication", { screen: "Login" })
-        // );
       });
   };
 
   const onAddToWishlist = async () => {
-    await addToFavorite(product.id)
-    .then(() => setShowModalWishlist(true))
-    .catch((err: any) => {
-      console.log(err);
-      navigation.dispatch(
-        StackActions.replace("Authentication", { screen: "Login" })
-      );
-    });
-  }
+    if(isFavorited){
+      await removeFromFavorite(product.id)
+      .then(() => {
+        setWishlistLabel('Removed from Wishlist')
+        setShowModalWishlist(true)
+      })
+      .catch((err: any) => {
+        console.log(err);
+        navigation.dispatch(
+          StackActions.replace("Authentication", { screen: "Login" })
+        );
+      });
+    }
+    else{
+      await addToFavorite(product.id)
+        .then(() => {
+          setWishlistLabel('Added to Wishlist')
+          setShowModalWishlist(true)
+        })
+        .catch((err: any) => {
+          console.log(err);
+          navigation.dispatch(
+            StackActions.replace("Authentication", { screen: "Login" })
+          );
+        });
+    }
+  };
 
   const formattedSizes = product.sizes.map(({ name }: any) => {
     return { value: name, label: name };
   });
 
   const backNavigation = () => {
-    if(favorite){
-      navigation.navigate("FavouriteOutfits")
+    if (favorite) {
+      navigation.navigate("FavouriteOutfits");
+    } else {
+      navigation.navigate("OutfitIdeas");
     }
-    else{ 
-      navigation.navigate("OutfitIdeas")
-    }
-  }
+  };
 
   // Back Button Handler
   useFocusEffect(
     React.useCallback(() => {
-      const onBackPress = ():any => {
-        if(favorite){
-          navigation.navigate("FavouriteOutfits")
-          return true
+      const onBackPress = (): any => {
+        if (favorite) {
+          navigation.navigate("FavouriteOutfits");
+          return true;
         }
-        
       };
 
-      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
 
       return () =>
-        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
     }, [])
   );
 
@@ -131,7 +166,7 @@ const ProductDetail = ({ navigation, route, }: any) => {
       <ModalBox
         trigger={showModalWishlist}
         closeModal={closeModalWishlist}
-        label="Added to Wishlist"
+        label={wishlistLabel}
         buttons={<ModalWishlistButtons closeModal={closeModalWishlist} />}
       />
       <Box
@@ -238,8 +273,8 @@ const ProductDetail = ({ navigation, route, }: any) => {
         </Box>
 
         <Box flexDirection="row">
-          <Button
-            icon="heart"
+          <WishlistButton
+            icon={isFavorited ? "heart" : "heart-o"}
             variant="secondary"
             label="Wishlist "
             style={{ width: width * 0.3 }}

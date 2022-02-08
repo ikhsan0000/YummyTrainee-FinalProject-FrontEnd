@@ -13,6 +13,7 @@ import {
 export const CartContext = createContext({});
 
 export const CartContextProvider = ({ children }: any) => {
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation()
 
@@ -128,6 +129,7 @@ export const CartContextProvider = ({ children }: any) => {
         editQuantity,
         deleteItem,
         isLoading,
+        error
       }}
     >
       {children}

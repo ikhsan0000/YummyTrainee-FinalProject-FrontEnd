@@ -1,3 +1,4 @@
+import { StackActions, useNavigation } from "@react-navigation/native";
 import { createContext, useState } from "react";
 import { Alert } from "react-native";
 import { getValueFor } from "../authentication/auth.service";
@@ -6,12 +7,14 @@ import {
   addToFavoriteRequest,
   changePasswordRequest,
   currentProfileRequest,
+  removeFromFavoriteRequest,
   updateProfileRequest,
 } from "./profile.service";
 
 export const ProfileContext = createContext({});
 
 export const ProfileContextProvider = ({ children }: any) => {
+  const navigation = useNavigation()
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [profile, setProfile] = useState(null);
@@ -28,9 +31,14 @@ export const ProfileContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
-          if (err.response.status === 401) {
+          if(err.response.status === 401)
+          {
             Alert.alert("session expired, please log in again");
-          }
+            navigation.dispatch(
+              StackActions.replace("Authentication", { screen: "Login" })
+            );
+          }  
+          setError(err)
           reject(err);
         });
     });
@@ -52,6 +60,14 @@ export const ProfileContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+            navigation.dispatch(
+              StackActions.replace("Authentication", { screen: "Login" })
+            );
+          } 
+          setError(err)
           reject(err);
         });
     });
@@ -68,6 +84,14 @@ export const ProfileContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+            navigation.dispatch(
+              StackActions.replace("Authentication", { screen: "Login" })
+            );
+          } 
+          setError(err)
           reject(err);
         });
     });
@@ -84,6 +108,38 @@ export const ProfileContextProvider = ({ children }: any) => {
         })
         .catch((err) => {
           setIsLoading(false);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+            navigation.dispatch(
+              StackActions.replace("Authentication", { screen: "Login" })
+            );
+          } 
+          setError(err)
+          reject(err);
+        });
+    });
+  };
+
+  const removeFromFavorite = (productId: any) => {
+    return new Promise<void>(async (resolve, reject) => {
+      setIsLoading(true);
+      const aToken = await getValueFor("aToken");
+      removeFromFavoriteRequest(aToken, productId)
+        .then(() => {
+          setIsLoading(false);
+          resolve();
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          if(err.response.status === 401)
+          {
+            Alert.alert("session expired, please log in again");
+            navigation.dispatch(
+              StackActions.replace("Authentication", { screen: "Login" })
+            );
+          } 
+          setError(err)
           reject(err);
         });
     });
@@ -96,7 +152,9 @@ export const ProfileContextProvider = ({ children }: any) => {
         changePassword,
         updateProfile,
         addToFavorite,
+        removeFromFavorite,
         profile,
+        error,
         isLoading,
       }}
     >

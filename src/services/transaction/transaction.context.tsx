@@ -1,3 +1,4 @@
+import { StackActions, useNavigation } from "@react-navigation/native";
 import { createContext, useState } from "react";
 import { Alert } from "react-native";
 import { getValueFor } from "../authentication/auth.service";
@@ -6,7 +7,9 @@ import { createTransactionRequest, getAllTransactionRequest } from "./transactio
 export const TransactionContext = createContext({});
 
 export const TransactionContextProvider = ({ children }: any) => {
+  const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigation()
 
   const getTransactions  = async () => {
     const aToken = await getValueFor("aToken");
@@ -23,7 +26,11 @@ export const TransactionContextProvider = ({ children }: any) => {
           if(err.response.status === 401)
           {
             Alert.alert("session expired, please log in again");
-          }
+            navigation.dispatch(
+              StackActions.replace("Authentication", { screen: "Login" })
+            );
+          } 
+          setError(err)
           reject(err);
         });
     });
@@ -44,7 +51,11 @@ export const TransactionContextProvider = ({ children }: any) => {
           if(err.response.status === 401)
           {
             Alert.alert("session expired, please log in again");
-          }
+            navigation.dispatch(
+              StackActions.replace("Authentication", { screen: "Login" })
+            );
+          } 
+          setError(err)
           reject(err);
         });
     });
@@ -55,7 +66,8 @@ export const TransactionContextProvider = ({ children }: any) => {
       value={{
         createTransaction,
         getTransactions,
-        isLoading
+        isLoading,
+        error
       }}
     >
       {children}

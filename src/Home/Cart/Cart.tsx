@@ -30,10 +30,6 @@ const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
       setCartItems(retrivedCart.data)
     } catch(err) {
       console.log(err)
-      // navigation.navigate('Authentication', { screen: 'Login' });
-      navigation.dispatch(
-        StackActions.replace('Authentication', { screen: 'Login' })
-      );
     }
   },[])
 

@@ -48,3 +48,15 @@ export const addToFavoriteRequest = (aToken: any, productId: any) => {
         });
     })
 }
+
+export const removeFromFavoriteRequest = (aToken: any, productId: any) => {
+    return new Promise<any>(async (resolve, reject) => {
+        await baseUrlAxios.delete(`user-profile/favorite/${productId}`,
+        {headers: { Authorization: `Bearer ${aToken}` } }
+        ).then((data: any) => {
+            resolve(data)
+        }).catch((err: any) => {
+            reject(err)
+        });
+    })
+}
