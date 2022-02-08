@@ -18,6 +18,10 @@ const tabs = [
 
 const EditProfile = ({ navigation }: HomeNavigationProps<"EditProfile">) => {
   const theme = useTheme();
+  const [refresh, setRefresh] = useState(false)
+  const refreshing = () => {
+    setRefresh(!refresh)
+  }
 
   // Profile Context
   const { profile, currentUserProfile }:any = useContext(ProfileContext)
@@ -27,7 +31,7 @@ const EditProfile = ({ navigation }: HomeNavigationProps<"EditProfile">) => {
     } catch(err) {
       console.log(err)
     }
-  }, [])
+  }, [refresh])
 
   return (
     <Box flex={1}>
@@ -86,7 +90,7 @@ const EditProfile = ({ navigation }: HomeNavigationProps<"EditProfile">) => {
         
         <Tabs tabs={tabs}>
           <Configuration />
-          <PersonalInfo />
+          <PersonalInfo refreshing={refreshing} />
         </Tabs>
         </Box>
       </Box>

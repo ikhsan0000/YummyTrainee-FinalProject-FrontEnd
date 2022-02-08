@@ -20,9 +20,11 @@ const genders = [
 interface PersonalInfoProps {
   // profile:any
   navigation: any
+  refreshing: () => void
 }
 
-const PersonalInfo = ({navigation}: PersonalInfoProps) => {
+const PersonalInfo = ({navigation, refreshing}: PersonalInfoProps) => {
+  const [refresh, setRefresh] = useState(false)
 
   // Profile Context
   const { updateProfile, currentUserProfile, isLoading, changePassword, profile }:any = useContext(ProfileContext)
@@ -32,7 +34,7 @@ const PersonalInfo = ({navigation}: PersonalInfoProps) => {
     } catch(err) {
       console.log(err)
     }
-  }, [])
+  }, [refresh])
 
   // YUP
   const formSchemaProfile = Yup.object().shape({
@@ -80,7 +82,11 @@ const PersonalInfo = ({navigation}: PersonalInfoProps) => {
   const onSubmit = async (data:any) => {
     setModalLabel('Profile Changed')
     await updateProfile(data)
-      .then(setShowModal(true))
+      .then(() => {
+        refreshing()
+        setRefresh(!refresh)
+        setShowModal(true)
+      })
       .catch((err: any) => {
         console.log(err)
         navigation.dispatch(
@@ -174,6 +180,7 @@ const PersonalInfo = ({navigation}: PersonalInfoProps) => {
           <Button
             variant="primary"
             label="Change Personal Info"
+            isLoading={isLoading}
             onPress={handleSubmit(onSubmit)}
           />
         </Box>
@@ -254,6 +261,7 @@ const PersonalInfo = ({navigation}: PersonalInfoProps) => {
       <Box alignItems="center" marginTop="l">
           <Button
             variant="primary"
+            isLoading={isLoading}
             label="Change Password Info"
             onPress={handleSubmitPassword(onSubmitPassword)}
           />
