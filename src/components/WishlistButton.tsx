@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 import { RectButton, RectButtonProperties } from "react-native-gesture-handler";
 import { Text } from "./Theme";
 import { ActivityIndicator, Colors } from "react-native-paper";
-import { Feather as Icon } from "@expo/vector-icons";
+import { FontAwesome  as Icon } from "@expo/vector-icons";
 
 
 interface ButtonProps {
@@ -16,7 +16,7 @@ interface ButtonProps {
   icon?: string
 }
 
-const Button = ({ variant, label, onPress, style, isLoading, icon }: ButtonProps) => {
+const WishlistButton = ({ variant, label, onPress, style, isLoading, icon }: ButtonProps) => {
   const theme = useTheme();
   const backgroundColor =
     variant === "primary" ? theme.colors.primary : theme.colors.grey;
@@ -39,9 +39,9 @@ const Button = ({ variant, label, onPress, style, isLoading, icon }: ButtonProps
   );
 };
 
-Button.defaultProps = { vairant: "default" };
+WishlistButton.defaultProps = { vairant: "default" };
 
-export default Button;
+export default WishlistButton;
 
 const styles = StyleSheet.create({
   container: {

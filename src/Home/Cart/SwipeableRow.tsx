@@ -1,7 +1,8 @@
-import { View, StyleSheet, Dimensions } from "react-native";
-import React, { ReactNode, useCallback } from "react";
+import { View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import React, { ReactNode, useCallback, useContext } from "react";
 import { PanGestureHandler, RectButton } from "react-native-gesture-handler";
 import Animated, {
+  runOnJS,
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
@@ -13,6 +14,8 @@ import { snapPoint } from "react-native-redash";
 import { LinearGradient } from "expo-linear-gradient";
 import { Box, Text } from "../../components/Theme";
 import RoundedIcon from "../../Authentication/components/RoundedIcon";
+import { CartContext } from "../../services/cart/cart.context";
+import { StackActions, useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 const finalDest = width;
@@ -23,14 +26,50 @@ const snapPoints = [-editWidth * aspectRatio, 0, width];
 interface SwipeableRowProps {
   children: ReactNode;
   height: number;
+  cartItemId: number;
+  onSubtractQty: any;
+  onAddQty: any;
   onDelete: () => void;
 }
 
-const SwipeableRow = ({ children, onDelete, height:defaultHeight}: SwipeableRowProps) => {
-  console.log(console.log(onDelete));
-  
+const SwipeableRow = ({
+  children,
+  onDelete,
+  height: defaultHeight,
+  cartItemId,
+  onSubtractQty,
+  onAddQty,
+}: SwipeableRowProps) => {
+
+  // Cart Context
+  const { editQuantity, oneCartDetail, isLoading }: any =
+    useContext(CartContext);
+
+  const navigation = useNavigation()
+
+  const updateQty = async (type: string) => {
+    const currentQty = await oneCartDetail(cartItemId)
+      .then((res: any) => {
+        return res.data.quantity;
+      })
+      .catch((err: any) => {
+        console.error(err);
+        navigation.dispatch(
+          StackActions.replace('Authentication', { screen: 'Login' })
+        );
+      });
+    let reqData;
+    if (type === "add") {
+      reqData = { cartToProductId: cartItemId, quantity: currentQty + 1 };
+    } else if (type === "subtract") {
+      reqData = { cartToProductId: cartItemId, quantity: currentQty - 1 };
+    }
+
+    await editQuantity(reqData);
+  };
+
   const height = useSharedValue(defaultHeight);
-  const deleteItem = useCallback(() => { onDelete() }, [onDelete])
+
   const theme = useTheme();
   const translateX = useSharedValue(0);
 
@@ -45,7 +84,7 @@ const SwipeableRow = ({ children, onDelete, height:defaultHeight}: SwipeableRowP
       const dest = snapPoint(translateX.value, velocityX, snapPoints);
       translateX.value = withSpring(dest, { overshootClamping: true }, () => {
         if (dest === finalDest) {
-          height.value = withTiming(0, {duration: 250}, () => deleteItem())
+          height.value = withTiming(0, { duration: 250 }, () => runOnJS(onDelete)());
         }
       });
     },
@@ -60,7 +99,7 @@ const SwipeableRow = ({ children, onDelete, height:defaultHeight}: SwipeableRowP
   const deleteStyle = useAnimatedStyle(() => ({
     opacity: translateX.value > 0 ? 1 : 0,
   }));
-  
+
   const editStyle = useAnimatedStyle(() => ({
     opacity: translateX.value < 0 ? 1 : 0,
   }));
@@ -99,7 +138,13 @@ const SwipeableRow = ({ children, onDelete, height:defaultHeight}: SwipeableRowP
           alignSelf="flex-end"
           alignItems="center"
         >
-          <RectButton rippleColor="rgba(0,0,0,0)" onPress={() => alert("Plus")}>
+          <TouchableOpacity
+            onPress={() => {
+              onAddQty();
+              updateQty("add");
+            }}
+            disabled={isLoading ? true : false}
+          >
             <RoundedIcon
               iconRatio={0.5}
               name="plus"
@@ -107,8 +152,14 @@ const SwipeableRow = ({ children, onDelete, height:defaultHeight}: SwipeableRowP
               color="white"
               backgroundColor="primary"
             />
-          </RectButton>
-          <RectButton rippleColor="rgba(0,0,0,0)" onPress={() => alert("Minus")}>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              updateQty("subtract");
+              onSubtractQty();
+            }}
+            disabled={isLoading ? true : false}
+          >
             <RoundedIcon
               iconRatio={0.5}
               name="minus"
@@ -116,8 +167,7 @@ const SwipeableRow = ({ children, onDelete, height:defaultHeight}: SwipeableRowP
               color="white"
               backgroundColor="danger"
             />
-          </RectButton>
-          
+          </TouchableOpacity>
         </Box>
       </Animated.View>
 

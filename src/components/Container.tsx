@@ -5,8 +5,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { theme } from ".";
-import { Box } from "./Theme";
+import theme, { Box } from "./Theme";
 
 export const assets = [
   require("./assets/patterns/1.png"),

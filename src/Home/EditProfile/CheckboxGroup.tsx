@@ -7,22 +7,25 @@ interface CheckboxGroupProps {
   options: { value: string; label: string }[];
   radio?: boolean;
   hookFormData?: any
+  defaultSelected?: any
+  callback?: any
 }
 
-const CheckboxGroup = ({ options, radio, hookFormData }: CheckboxGroupProps) => {
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
-
+const CheckboxGroup = ({ options, radio, hookFormData, defaultSelected, callback }: CheckboxGroupProps) => {
+  const [selectedValues, setSelectedValues] = useState<string[]>([`${defaultSelected}`]);
   return (
     <Box flexDirection="row" flexWrap="wrap">
       {options.map(({ label, value }) => {
         const index = selectedValues.indexOf(value);
-        const isSelected = selectedValues.indexOf(value) !== -1;
+        let isSelected = selectedValues.indexOf(value) !== -1;
+    
         return (
           <Button
             key={value}
             variant={isSelected ? "primary" : "default"}
             onPress={() => {
               if (radio) {
+                {callback && callback(value)}
                 setSelectedValues([value]);
                 hookFormData && hookFormData(value);
               } else {

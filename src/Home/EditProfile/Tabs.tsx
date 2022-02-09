@@ -35,7 +35,7 @@ const Tabs = ({ tabs, children }: TabsProps) => {
     <Box flex={1}>
       <Box flexDirection="row">
         {tabs.map((tab, index) => (
-          <RectButton style={{ flex: 1 }} onPress={() => onPressConfig(tab, index)}>
+          <RectButton key={index}  style={{ flex: 1 }} onPress={() => onPressConfig(tab, index)}>
             <Box
               key={tab.id}
               padding="m"

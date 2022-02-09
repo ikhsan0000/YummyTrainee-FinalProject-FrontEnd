@@ -1,43 +1,43 @@
 import React from "react";
 import { View, Text, ScrollView } from "react-native";
+import { Box } from "../../components/Theme";
 import Category from "./Category";
 const categories = [
   {
-    id: "newin",
-    title: "New In",
+    id: "all",
+    title: "All Product",
     color: "#FFDDDD",
   },
   {
-    id: "summer",
-    title: "Summer",
+    id: "sports-wear",
+    title: "Sports Wear",
     color: "#BEECC4",
   },
   {
-    id: "activewear",
-    title: "Active Wear",
+    id: "casual-wear",
+    title: "Casual Wear",
     color: "#BFEAF5",
   },
   {
-    id: "outlet",
-    title: "Outlet",
+    id: "formal-wear",
+    title: "Formal Wear",
     color: "#F1E0FF",
-  },
-  {
-    id: "accesories",
-    title: "Accesories",
-    color: "#FFE8E9",
-  },
+  }
 ];
 
-interface CategoriesProps {}
+interface CategoriesProps {
+  onCategoryChange: (title:string) => void;
+}
 
-const Categories = () => {
+const Categories = ({ onCategoryChange }: CategoriesProps) => {
   return (
+    <Box>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {categories.map((category) => (
-          <Category key={category.id} category={category} />
+          <Category key={category.id} category={category} onCategoryChange={onCategoryChange}/>
         ))}
       </ScrollView>
+    </Box>
   );
 };
 

@@ -1,6 +1,6 @@
 import { useTheme } from "@shopify/restyle";
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { RectButton, RectButtonProperties } from "react-native-gesture-handler";
 import { Text } from "./Theme";
 import { ActivityIndicator, Colors } from "react-native-paper";
@@ -16,16 +16,16 @@ interface ButtonProps {
   icon?: string
 }
 
-const Button = ({ variant, label, onPress, style, isLoading, icon }: ButtonProps) => {
+const ModalButton = ({ variant, label, onPress, style, isLoading, icon }: ButtonProps) => {
   const theme = useTheme();
   const backgroundColor =
     variant === "primary" ? theme.colors.primary : theme.colors.grey;
   const color =
     variant === "primary" ? theme.colors.white : theme.colors.secondary;
   return (
-    <RectButton
+    <TouchableOpacity
       style={[styles.container, style, { backgroundColor }]}
-      {...{ onPress }}
+      onPress={onPress}
     >
       <Text variant="button" style={{ color }}>
         {isLoading ? (
@@ -35,13 +35,13 @@ const Button = ({ variant, label, onPress, style, isLoading, icon }: ButtonProps
         )}
         {(icon && isLoading==false) && (<>&nbsp;<Icon name={icon} /></>)}
       </Text>
-    </RectButton>
+    </TouchableOpacity>
   );
 };
 
-Button.defaultProps = { vairant: "default" };
+ModalButton.defaultProps = { vairant: "default" };
 
-export default Button;
+export default ModalButton;
 
 const styles = StyleSheet.create({
   container: {

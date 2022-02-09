@@ -7,12 +7,18 @@ import TransactionHistory from "./TransactionHistory";
 import EditProfile from "./EditProfile";
 import NotificationSettings from "./NotificationSettings";
 import Cart from "./Cart";
+import ProductDetail from "./OutfitIdeas/ProductDetail";
+import { useContext, useEffect } from "react";
+import { ProfileContext } from "../services/profile/profile.context";
+import { StackActions } from "@react-navigation/native";
+import TransactionHistoryDetail from "./TransactionHistory/TransactionHistoryDetail";
 
 const Drawer = createDrawerNavigator<HomeRoutes>();
-export const HomeNavigator = () => {
+export const HomeNavigator = ({navigator}: any) => {
+
   return (
     <Drawer.Navigator
-      drawerContent={DrawerContent}
+      drawerContent={() => <DrawerContent />}
       screenOptions={{ drawerStyle: { width: DRAWER_WIDTH } }}
     >
       <Drawer.Screen
@@ -20,6 +26,7 @@ export const HomeNavigator = () => {
         component={OutfitIdeas}
         options={{
           headerShown: false,
+          unmountOnBlur:true
         }}
       />
 
@@ -28,6 +35,7 @@ export const HomeNavigator = () => {
         component={FavouriteOutfits}
         options={{
           headerShown: false,
+          unmountOnBlur:true
         }}
       />
 
@@ -36,6 +44,16 @@ export const HomeNavigator = () => {
         component={TransactionHistory}
         options={{
           headerShown: false,
+          unmountOnBlur:true
+        }}
+      />
+
+      <Drawer.Screen
+        name="TransactionHistoryDetail"
+        component={TransactionHistoryDetail}
+        options={{
+          headerShown: false,
+          unmountOnBlur:true
         }}
       />
 
@@ -44,6 +62,7 @@ export const HomeNavigator = () => {
         component={EditProfile}
         options={{
           headerShown: false,
+          unmountOnBlur:true
         }}
       />
 
@@ -60,6 +79,16 @@ export const HomeNavigator = () => {
         component={Cart}
         options={{
           headerShown: false,
+          unmountOnBlur:true
+        }}
+      />
+
+      <Drawer.Screen
+        name="ProductDetail"
+        component={ProductDetail}
+        options={{
+          headerShown: false,
+          unmountOnBlur:true
         }}
       />
     </Drawer.Navigator>

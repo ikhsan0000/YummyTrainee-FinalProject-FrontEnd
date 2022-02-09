@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, View } from "react-native";
 
@@ -18,10 +18,12 @@ import { BorderlessButton } from "react-native-gesture-handler";
 import {
   CommonActions,
   CompositeNavigationProp,
+  StackActions,
 } from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { StackNavigationProp } from "@react-navigation/stack";
 import axios from "axios";
+import { AuthContext } from "../../services/authentication/auth.context";
 
 const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
   // YUP
@@ -41,34 +43,20 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
     formState: { errors, isValid },
   } = useForm({ mode: "onChange", resolver: yupResolver(formSchema) });
 
+  // Auth Context
+  const { onLogin, isLoading, error }: any = useContext(AuthContext);
+
   // Submit handler
   const onSubmit = async (data: any) => {
-    console.log(data);
-
-    // const formattedData = JSON.stringify({
-    //   email: data.email,
-    //   password: data.password,
-    // });
-
-    // axios({
-    //   method: 'post',
-    //   url: 'http://192.168.0.172:3000/auth/local/login',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   data : formattedData
-    // }).then((data) => {
-    //   console.log(data)
-    // }).catch((error) => {
-    //   console.log(error)
-    // });
-
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: "Home" }],
-      })
-    );
+    await onLogin(data).then(() => {
+    
+      navigation.dispatch(
+        StackActions.replace('Home')
+      );
+        
+    }).catch((err)=> {
+      console.log(err)
+    });
   };
 
   const footer = (
@@ -143,7 +131,7 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
                 justifyContent="space-between"
                 paddingVertical="m"
               >
-                <Checkbox label="Remeber me" hookFormData={rememberMe} />
+                {/* <Checkbox label="Remeber me" hookFormData={rememberMe} /> */}
 
                 <BorderlessButton
                   rippleColor="rgba(0,0,0,0)"
@@ -156,22 +144,11 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
           }}
         />
 
-        {/* <Box
-          flexDirection="row"
-          justifyContent="space-between"
-          paddingVertical="m"
-        >
-          <Checkbox label="Remeber me" />
-          <BorderlessButton
-            rippleColor="rgba(0,0,0,0)"
-            onPress={() => navigation.navigate("ForgotPassword")}
-          >
-            <Text color="primary">Forgot Password?</Text>
-          </BorderlessButton>
-        </Box> */}
+        {error && <Text color="danger">Invalid Credentials</Text>}
 
         <Box alignItems="center" marginTop="m">
           <Button
+            isLoading={isLoading}
             variant="primary"
             label="Log In"
             onPress={handleSubmit(onSubmit)}

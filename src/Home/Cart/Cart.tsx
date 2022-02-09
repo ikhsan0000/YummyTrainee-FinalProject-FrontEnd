@@ -1,5 +1,5 @@
 import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CartContainer from "./CartContainer";
 import { Box, Text } from "../../components/Theme";
 import { Header } from "../../components";
@@ -8,20 +8,33 @@ import Item from "./Item";
 import Svg, { Path } from "react-native-svg";
 import { useTheme } from "@shopify/restyle";
 import Checkout from "./Checkout";
+import { CartContext } from "../../services/cart/cart.context";
+import { ActivityIndicator, Colors } from "react-native-paper";
+import { StackActions } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 const aspectRatio = width / 375;
 const height = 100 * aspectRatio;
 const d = "M 0 0 A 50 50 0 0 0 50 50 H 325 A 50 50 0 0 1 376 100 V 0 Z";
 
-const defaultItems = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
-
 const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
   const theme = useTheme();
-  const [items, setItems] = useState(defaultItems);
+  const [cartItems, setCartItems] = useState([])
+
+  // Cart Context
+  const { cartDetail, deleteItem } : any = useContext(CartContext)
+
+  useEffect( async () => {
+    try{
+      const retrivedCart = await cartDetail()
+      setCartItems(retrivedCart.data)
+    } catch(err) {
+      console.log(err)
+    }
+  },[])
 
   return (
-    <CartContainer CheckoutComponent={Checkout}>
+    <CartContainer CheckoutComponent={Checkout} cartDetail={cartItems}>
       <Box backgroundColor="primary">
         <Header
           title="shopping cart"
@@ -39,16 +52,22 @@ const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
           showsVerticalScrollIndicator={false}
         >
 
-          {items.map((item, i) => (
+          {/* {isLoading && ( <ActivityIndicator style={{paddingTop: 200}} animating={true} color={Colors.blue400} size="large" />)} */}
+          {cartItems && cartItems.map((item:any, i) => {
+            return (
             <Item
-              key={item.id}
-              //onDelete need fix, passed as function then becomes undefined
+              key={i}
+              cartItem={item}
               onDelete={() => {
-                items.splice(i, 1);
-                setItems(items.concat());
+                const updatedItems = cartItems.filter(currentItem => {
+                    return currentItem.id !== item.id
+                })
+                setCartItems(updatedItems);
+                deleteItem(item.id)
               }}
             />
-          ))}
+          )}
+          )}
           
         </ScrollView>
         <Box
@@ -64,7 +83,7 @@ const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
             <Path d={d} fill={theme.colors.primary} />
           </Svg>
           <Text variant="title2" color="white" textAlign="center">
-            3 Items Added
+            {cartItems.length} Items Added
           </Text>
         </Box>
       </Box>

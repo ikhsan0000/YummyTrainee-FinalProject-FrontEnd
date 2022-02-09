@@ -1,9 +1,16 @@
-import { CommonActions, DrawerActions } from "@react-navigation/native";
-import React from "react";
-import { Image, Dimensions, StyleSheet } from "react-native";
+import {
+  DrawerActions,
+  StackActions,
+  useNavigation,
+} from "@react-navigation/native";
+import React, { useContext, useEffect, useState } from "react";
+import { Image, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import { Header } from "../../components";
 import theme, { Box, Text } from "../../components/Theme";
+import { ProfileContext } from "../../services/profile/profile.context";
 import DrawerItem, { DrawerItemProps } from "./DrawerItem";
+import * as ImagePicker from 'expo-image-picker';
+import FormData from "form-data";
 
 const aspectRatio = 750 / 1125;
 const { width } = Dimensions.get("window");
@@ -13,13 +20,13 @@ const height = DRAWER_WIDTH * aspectRatio;
 const items: DrawerItemProps[] = [
   {
     icon: "zap",
-    label: "Outfit Ideas",
+    label: "Product List",
     screen: "OutfitIdeas",
     color: "primary",
   },
   {
     icon: "heart",
-    label: "Favourite Outfits",
+    label: "Wishlist",
     screen: "FavouriteOutfits",
     color: "orange",
   },
@@ -44,16 +51,80 @@ const items: DrawerItemProps[] = [
   {
     icon: "log-out",
     label: "Logout",
-    onPress: (navigation) => navigation.dispatch(CommonActions.reset({
-      index: 0,
-      routes: [{name: 'Authentication'}]
-    })) ,
+    onPress: (navigation: any, onLogout: any) => {
+   
+      onLogout()
+        .then((data: any) => {
+          navigation.dispatch(
+            StackActions.replace("Authentication", { screen: "Login" })
+          );
+        })
+        .catch((err: any) => {
+          navigation.dispatch(
+            StackActions.replace("Authentication", { screen: "Login" })
+          );
+          console.log(err);
+        });
+    },
     color: "secondary",
   },
 ];
 
+const Drawer = () => {
+  const navigation = useNavigation();
 
-const Drawer = ({navigation}: any) => {
+
+  // Profile Context
+  const { profile, currentUserProfile }: any = useContext(ProfileContext);
+
+  const [profileImageFilename, setprofileImageFilename] = useState('default.png');
+  const profilePictureUrl = `http://192.168.0.172:3000/user-profile/profile-picture/${profileImageFilename}`
+  
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    let localUri = result.uri;
+    let filename = localUri.split("/").pop();
+
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+
+    let formData = new FormData();
+    formData.append("file", { uri: localUri, name: filename, type });
+
+    if (!result.cancelled) {
+      // changeProfilePicture(formData)
+      // .then(() => {
+      //   setprofileImageFilename(profile.profilePicture);
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      //   return
+      // })
+      return
+    }
+  };
+  
+  useEffect(async () => {
+    try {
+      await currentUserProfile().then(() => {
+        if(profile.profilePicture !== ''){
+          setprofileImageFilename(profile.profilePicture)
+        }
+        else{
+          setprofileImageFilename('default.png')
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
   return (
     <Box flex={1}>
       <Box flex={0.15} backgroundColor="white">
@@ -68,8 +139,14 @@ const Drawer = ({navigation}: any) => {
         >
           <Header
             title="my profile"
-            left={{ icon: "x", onPress: () => navigation.dispatch(DrawerActions.closeDrawer()) }}
-            right={{ icon: "shopping-cart", onPress: () => navigation.navigate("Cart") }}
+            left={{
+              icon: "x",
+              onPress: () => navigation.dispatch(DrawerActions.closeDrawer()),
+            }}
+            right={{
+              icon: "shopping-cart",
+              onPress: () => navigation.navigate("Cart"),
+            }}
             dark
           />
         </Box>
@@ -102,26 +179,37 @@ const Drawer = ({navigation}: any) => {
           justifyContent="center"
           padding="m"
         >
-          <Box
-            backgroundColor="primary"
-            width={100}
-            height={100}
-            style={{ borderRadius: 50 }}
-            alignSelf="center"
-            top={-theme.spacing.xl}
-          />
+          <TouchableOpacity onPress={() => pickImage()}>
+            <Box
+              backgroundColor="primary"
+              width={100}
+              height={100}
+              style={{ borderRadius: 50 }}
+              alignSelf="center"
+              top={-theme.spacing.xl}
+              overflow="hidden"
+            >
+              <Image
+                style={{ flex: 1 }}
+                source={{
+                  uri: profilePictureUrl,
+                }}
+              />
+              
+            </Box>
+         
+          </TouchableOpacity>
 
           <Box marginBottom="s" top={-20}>
             <Text variant="title1" fontSize={24} textAlign="center">
-              Ikhsan Firdauz
+              {profile && profile.fullName}
             </Text>
-
             <Text variant="body" textAlign="center" fontSize={14}>
-              ikhsanfirdauz000@gmail.com
+              {profile && profile.user.email}
             </Text>
 
-            {items.map((item) => (
-              <DrawerItem key={item.screen} {...item} />
+            {items.map((item, index) => (
+              <DrawerItem key={index} {...item} />
             ))}
           </Box>
         </Box>

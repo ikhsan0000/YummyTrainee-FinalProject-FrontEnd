@@ -1,13 +1,14 @@
 import { View } from "react-native";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Text } from "../../components/Theme";
 import { Header } from "../../components";
 import { HomeNavigationProps } from "../../components/Navigation";
-import { DrawerActions } from "@react-navigation/native";
+import { DrawerActions, StackActions } from "@react-navigation/native";
 import { useTheme } from "@shopify/restyle";
 import Tabs from "./Tabs";
 import Configuration from "./Configuration";
 import PersonalInfo from "./PersonalInfo";
+import { ProfileContext } from "../../services/profile/profile.context";
 
 
 const tabs = [
@@ -17,6 +18,21 @@ const tabs = [
 
 const EditProfile = ({ navigation }: HomeNavigationProps<"EditProfile">) => {
   const theme = useTheme();
+  const [refresh, setRefresh] = useState(false)
+  const refreshing = () => {
+    setRefresh(!refresh)
+  }
+
+  // Profile Context
+  const { profile, currentUserProfile }:any = useContext(ProfileContext)
+  useEffect(async () => {
+    try{
+      await currentUserProfile()
+    } catch(err) {
+      console.log(err)
+    }
+  }, [refresh])
+
   return (
     <Box flex={1}>
       <Box flex={0.15} backgroundColor="white">
@@ -63,18 +79,18 @@ const EditProfile = ({ navigation }: HomeNavigationProps<"EditProfile">) => {
 
           <Box style={{marginTop:-theme.spacing.xl - 10}}>
             <Text variant="title1" fontSize={24} textAlign="center">
-              Ikhsan Firdauz
+              {profile && profile.fullName}
             </Text>
 
             <Text variant="body" textAlign="center" fontSize={14}>
-              ikhsanfirdauz000@gmail.com
+              {profile && profile.user.email}
             </Text>
           </Box>
 
         
         <Tabs tabs={tabs}>
           <Configuration />
-          <PersonalInfo />
+          <PersonalInfo refreshing={refreshing} />
         </Tabs>
         </Box>
       </Box>

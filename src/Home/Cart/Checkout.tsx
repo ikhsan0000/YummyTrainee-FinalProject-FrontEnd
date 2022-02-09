@@ -1,12 +1,16 @@
-import { ScrollView, TouchableWithoutFeedback, View } from "react-native";
-import React, { useState } from "react";
+import { Alert, ScrollView, TouchableWithoutFeedback, View } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Text } from "../../components/Theme";
 import Card, { CardType } from "./Card";
 import { useTheme } from "@shopify/restyle";
 import AddCard from "./AddCard";
 import { CARD_HEIGHT } from "./CardLayout";
 import { Button } from "../../components";
-import { useNavigation } from "@react-navigation/native";
+import { StackActions, useNavigation } from "@react-navigation/native";
+import { TransactionContext } from "../../services/transaction/transaction.context";
+import { ProfileContext } from "../../services/profile/profile.context";
+import ModalBox from "../../components/Modal";
+import ModalButtons from "./ModalButton";
 
 const cards = [
   {
@@ -47,14 +51,66 @@ const LineItem = ({ label, value }: LineItemProps) => {
 
 interface CheckoutProps {
   minHeight: number;
+  cartDetail: any;
 }
 
-const Checkout = ({ minHeight }: CheckoutProps) => {
+const Checkout = ({ minHeight, cartDetail }: CheckoutProps) => {
   const [selectedCard, setSelectedCard] = useState(cards[0].id);
   const navigation = useNavigation();
+  const { createTransaction, isLoading }: any = useContext(TransactionContext);
+  const { profile }: any = useContext(ProfileContext);
+
+  const totalItem = `Total Items (${cartDetail.length})`;
+  const shippingFee = 4;
+  let totalPrice = 0;
+  cartDetail.forEach((item: any) => {
+    totalPrice += item.product.price * item.quantity;
+  });
+
+  const totalPaymentLabel = `Pay for $${totalPrice + shippingFee}`;
+  const totalPayment = totalPrice + shippingFee;
+
+  const dataTransaction = {
+    address: profile && profile.address,
+    totalPrice: totalPayment,
+    shippingFee,
+  };
+
+  // modal handling
+  const [showModal, setShowModal] = useState(false);
+  const closeModal = () => {
+    setShowModal(false);
+    navigation.navigate("OutfitIdeas")
+  };
+
+  const onSubmit = async () => {
+    try {
+      if(cartDetail.length == 0) {
+        Alert.alert("Please add some item to cart")
+        return 
+      }
+      else if(profile.address == ''){
+        Alert.alert("Please add your address")
+        return 
+      }
+      await createTransaction(dataTransaction);
+      setShowModal(true)
+    } catch {
+      navigation.dispatch(
+        StackActions.replace("Authentication", { screen: "Login" })
+      );
+    }
+  };
 
   return (
     <Box flex={1} backgroundColor="secondary" style={{ paddingTop: minHeight }}>
+      <ModalBox
+        trigger={showModal}
+        closeModal={closeModal}
+        label="Transaction Successfull"
+        buttons={<ModalButtons closeModal={closeModal} />}
+      />
+
       <Box flex={1} padding="m">
         <Box height={CARD_HEIGHT}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -76,20 +132,21 @@ const Checkout = ({ minHeight }: CheckoutProps) => {
           </Text>
           <Box flexDirection="row" opacity={0.5} paddingVertical="m">
             <Box flex={1}>
-              <Text color="white">1545 Blvd. Cote-Vertu Ouest</Text>
-              <Text color="white">Montreal, Quebec</Text>
+              <Text color="white">{profile && profile.address}</Text>
             </Box>
-  
-            <TouchableWithoutFeedback onPress={() => navigation.navigate("EditProfile")}>
+
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate("EditProfile")}
+            >
               <Box justifyContent="center" alignItems="center">
                 <Text color="white">Change</Text>
               </Box>
             </TouchableWithoutFeedback>
           </Box>
 
-          <LineItem label="Total Items (6)" value={189.94} />
-          <LineItem label="Standard Delivery" value={12.0} />
-          <LineItem label="Total Payment" value={201.84} />
+          <LineItem label={totalItem} value={totalPrice} />
+          <LineItem label="Standard Delivery" value={shippingFee} />
+          <LineItem label="Total Payment" value={totalPrice + shippingFee} />
         </Box>
 
         <Box
@@ -99,12 +156,12 @@ const Checkout = ({ minHeight }: CheckoutProps) => {
           justifyContent="flex-end"
         >
           <Button
-            label="Pay for $201.84"
+            label={totalPaymentLabel}
+            isLoading={isLoading}
             variant="primary"
-            onPress={() => true}
+            onPress={() => onSubmit()}
           />
         </Box>
-
       </Box>
     </Box>
   );
