@@ -1,6 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Text } from "../../components/Theme";
-import { Alert, BackHandler, Dimensions, Image } from "react-native";
+import {
+  Alert,
+  BackHandler,
+  Dimensions,
+  Image,
+  ScrollView,
+} from "react-native";
 import { Card } from "react-native-elements";
 import { useTheme } from "@shopify/restyle";
 import ProductCard from "./ProductCard";
@@ -41,12 +47,13 @@ const ProductDetail = ({ navigation, route }: any) => {
 
   // Check current favorite
   useEffect(() => {
-    currentFav && currentFav.forEach((favoriteItem:any) => {
-      if (favoriteItem.id == product.id) {
-        setIsFavorited(true);
-      }
-    });
-  }, [currentFav])
+    currentFav &&
+      currentFav.forEach((favoriteItem: any) => {
+        if (favoriteItem.id == product.id) {
+          setIsFavorited(true);
+        }
+      });
+  }, [currentFav]);
 
   // add to cart modal
   const closeModal = () => {
@@ -59,7 +66,7 @@ const ProductDetail = ({ navigation, route }: any) => {
     setShowModalWishlist(false);
   };
   const [showModalWishlist, setShowModalWishlist] = useState(false);
-  const [wishlistLabel, setWishlistLabel] = useState('')
+  const [wishlistLabel, setWishlistLabel] = useState("");
 
   // Cart Context
   const { addToCart, isLoading }: any = useContext(CartContext);
@@ -98,24 +105,23 @@ const ProductDetail = ({ navigation, route }: any) => {
   };
 
   const onAddToWishlist = async () => {
-    if(isFavorited){
+    if (isFavorited) {
       await removeFromFavorite(product.id)
-      .then(() => {
-        setWishlistLabel('Removed from Wishlist')
-        setShowModalWishlist(true)
-      })
-      .catch((err: any) => {
-        console.log(err);
-        navigation.dispatch(
-          StackActions.replace("Authentication", { screen: "Login" })
-        );
-      });
-    }
-    else{
+        .then(() => {
+          setWishlistLabel("Removed from Wishlist");
+          setShowModalWishlist(true);
+        })
+        .catch((err: any) => {
+          console.log(err);
+          navigation.dispatch(
+            StackActions.replace("Authentication", { screen: "Login" })
+          );
+        });
+    } else {
       await addToFavorite(product.id)
         .then(() => {
-          setWishlistLabel('Added to Wishlist')
-          setShowModalWishlist(true)
+          setWishlistLabel("Added to Wishlist");
+          setShowModalWishlist(true);
         })
         .catch((err: any) => {
           console.log(err);
@@ -222,10 +228,15 @@ const ProductDetail = ({ navigation, route }: any) => {
         </Box>
 
         <Box flex={0.01} backgroundColor="primary" />
-        <Text variant="title3" color="darkGrey" fontSize={14}>
-          Seller's description:
-        </Text>
-        <Text variant="body">{product.description}</Text>
+        
+        <Box flex={1}>
+          <Text variant="title3" color="darkGrey" fontSize={14}>
+            Seller's description:
+          </Text>
+          <ScrollView>
+            <Text variant="body">{product.description}</Text>
+          </ScrollView>
+        </Box>
       </Box>
 
       <Box

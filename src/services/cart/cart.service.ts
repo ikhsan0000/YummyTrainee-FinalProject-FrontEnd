@@ -58,7 +58,6 @@ export const editQuantityRequest = (aToken:string, data: any) => {
 
 export const deleteItemRequest = (aToken:string, cartItemId: any) => {
     return new Promise<void>(async (resolve, reject) => {
-        console.log(cartItemId)
         await baseUrlAxios.delete(`cart/${cartItemId}`,
         {headers: { Authorization: `Bearer ${aToken}` } }
         ).then(() => {

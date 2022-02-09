@@ -6,6 +6,7 @@ import { getValueFor } from "../authentication/auth.service";
 import {
   addToFavoriteRequest,
   changePasswordRequest,
+  changeProfilePictureRequest,
   currentProfileRequest,
   removeFromFavoriteRequest,
   updateProfileRequest,
@@ -47,7 +48,6 @@ export const ProfileContextProvider = ({ children }: any) => {
   const changePassword = (data: any) => {
     return new Promise<void>(async (resolve, reject) => {
       setIsLoading(true);
-      console.log(data);
       const aToken = await getValueFor("aToken");
       const formattedData = JSON.stringify({
         password: data.password,
@@ -68,16 +68,16 @@ export const ProfileContextProvider = ({ children }: any) => {
             );
           } 
           setError(err)
-          reject(err);
+          reject(err.response.data);
         });
     });
   };
 
-  const updateProfile = (data: any) => {
+  const updateProfile = (file: any) => {
     return new Promise<void>(async (resolve, reject) => {
       setIsLoading(true);
       const aToken = await getValueFor("aToken");
-      updateProfileRequest(aToken, data)
+      updateProfileRequest(aToken, file)
         .then(() => {
           setIsLoading(false);
           resolve();
@@ -144,6 +144,30 @@ export const ProfileContextProvider = ({ children }: any) => {
         });
     });
   };
+
+  // const changeProfilePicture = (file: any) => {
+  //   return new Promise<void>(async (resolve, reject) => {
+  //     setIsLoading(true);
+  //     const aToken = await getValueFor("aToken");
+  //     changeProfilePictureRequest(aToken, file)
+  //       .then(() => {
+  //         setIsLoading(false);
+  //         resolve();
+  //       })
+  //       .catch((err) => {
+  //         setIsLoading(false);
+  //         if(err.response.status === 401)
+  //         {
+  //           Alert.alert("session expired, please log in again");
+  //           navigation.dispatch(
+  //             StackActions.replace("Authentication", { screen: "Login" })
+  //           );
+  //         } 
+  //         setError(err)
+  //         reject(err);
+  //       });
+  //   });
+  // };
 
   return (
     <ProfileContext.Provider

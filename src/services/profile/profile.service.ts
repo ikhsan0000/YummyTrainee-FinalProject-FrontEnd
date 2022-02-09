@@ -1,4 +1,4 @@
-import { baseUrlAxios } from "../index.service";
+import { baseUrlAxios, baseUrlAxiosUpload } from "../index.service";
 
 export const currentProfileRequest = (aToken: any) => {
     return new Promise<any>(async (resolve, reject) => {
@@ -60,3 +60,16 @@ export const removeFromFavoriteRequest = (aToken: any, productId: any) => {
         });
     })
 }
+
+// export const changeProfilePictureRequest = (aToken:any, file: any) => {
+//     console.log(file)
+//     return new Promise<any>(async (resolve, reject) => {
+//         await baseUrlAxiosUpload.patch(`user-profile/profile-picture`, file,
+//         {headers: { Authorization: `Bearer ${aToken}`}  }
+//         ).then((data: any) => {
+//             resolve(data)
+//         }).catch((err: any) => {
+//             reject(err)
+//         });
+//     })
+// }

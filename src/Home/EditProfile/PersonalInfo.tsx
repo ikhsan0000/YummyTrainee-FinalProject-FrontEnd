@@ -1,7 +1,6 @@
 import { ScrollView, View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Text } from "../../components/Theme";
-import CheckboxGroup from "./CheckboxGroup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { Controller, useForm } from "react-hook-form";
@@ -11,30 +10,34 @@ import { ProfileContext } from "../../services/profile/profile.context";
 import ModalBox from "../../components/Modal";
 import { StackActions } from "@react-navigation/native";
 import ModalButtons from "./ModalButton";
-
-const genders = [
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-];
+import { AuthContext } from "../../services/authentication/auth.context";
+import { useNavigation } from "@react-navigation/native";
 
 interface PersonalInfoProps {
   // profile:any
-  navigation: any
-  refreshing: () => void
+  navigation: any;
+  refreshing: () => void;
 }
 
-const PersonalInfo = ({navigation, refreshing}: PersonalInfoProps) => {
-  const [refresh, setRefresh] = useState(false)
+const PersonalInfo = ({ refreshing }: PersonalInfoProps) => {
+  const [refresh, setRefresh] = useState(false);
+  const navigation = useNavigation()
 
   // Profile Context
-  const { updateProfile, currentUserProfile, isLoading, changePassword, profile }:any = useContext(ProfileContext)
+  const {
+    updateProfile,
+    currentUserProfile,
+    isLoading,
+    changePassword,
+    profile,
+  }: any = useContext(ProfileContext);
   useEffect(async () => {
-    try{
-      await currentUserProfile()
-    } catch(err) {
-      console.log(err)
+    try {
+      await currentUserProfile();
+    } catch (err) {
+      console.log(err);
     }
-  }, [refresh])
+  }, [refresh]);
 
   // YUP
   const formSchemaProfile = Yup.object().shape({
@@ -47,70 +50,108 @@ const PersonalInfo = ({navigation, refreshing}: PersonalInfoProps) => {
       .required("Current Password is required")
       .min(4, "Password length should be at least 4 characters"),
     password: Yup.string()
-    .required("Password is required")
-    .min(4, "Password length should be at least 4 characters"),
+      .required("Password is required")
+      .min(4, "Password length should be at least 4 characters"),
     passwordConfirm: Yup.string()
       .required("Confirm Password is required")
       .oneOf([Yup.ref("password")], "Password does not match"),
   });
-
 
   // React Hook Form here
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
-    reset
-  } = useForm({ 
-    mode: "onChange", resolver: yupResolver(formSchemaProfile) });
-  
+    reset,
+  } = useForm({
+    mode: "onChange",
+    resolver: yupResolver(formSchemaProfile),
+  });
+
   const {
-    control:controlPassword,
-    handleSubmit:handleSubmitPassword,
+    control: controlPassword,
+    handleSubmit: handleSubmitPassword,
     formState: { errors: errorsPassword },
   } = useForm({ mode: "onChange", resolver: yupResolver(formSchemaPassword) });
 
-
   // modal handling
   const [showModal, setShowModal] = useState(false);
-  const [modalLabel, setModalLabel] = useState('')
+  const [modalLabel, setModalLabel] = useState("");
   const closeModal = () => {
     setShowModal(false);
+  };
+
+  // modal password handling
+  const [showModalPassword, setShowModalPassword] = useState(false);
+  const [modalLabelPassword, setModalLabelPassword] = useState("");
+  const closeModalPassword = () => {
+    setShowModalPassword(false);
+  };
+  
+  const { onLogout }: any = useContext(AuthContext);
+
+  const logOut = () => {
+    onLogout()
+        .then((data: any) => {
+          navigation.dispatch(
+            StackActions.replace("Authentication", { screen: "Login" })
+          );
+        })
+        .catch((err: any) => {
+          navigation.dispatch(
+            StackActions.replace("Authentication", { screen: "Login" })
+          );
+          console.log(err);
+        });
   }
 
   // submit change personal info
-  const onSubmit = async (data:any) => {
-    setModalLabel('Profile Changed')
+  const onSubmit = async (data: any) => {
+    setModalLabel("Profile Changed");
     await updateProfile(data)
       .then(() => {
-        refreshing()
-        setRefresh(!refresh)
-        setShowModal(true)
+        refreshing();
+        setRefresh(!refresh);
+        setShowModal(true);
       })
       .catch((err: any) => {
-        console.log(err)
+        console.log(err);
         navigation.dispatch(
-          StackActions.replace('Authentication', { screen: 'Login' })
+          StackActions.replace("Authentication", { screen: "Login" })
         );
       });
-  }
+  };
 
   // submit change password
-  const onSubmitPassword = async (data:any) => {
-    setModalLabel('Password Changed')
+  const onSubmitPassword = async (data: any) => {
     await changePassword(data)
-    .then(setShowModal(true))
-    .catch((err:any) => {
-      console.log(err)
-    })
-  }
+      .then(() => {
+        setModalLabelPassword("Password Changed, Please Login again");
+        setShowModalPassword(true);
+      })
+      .catch((err: any) => {
+        setModalLabel(err.message);
+        setShowModal(true);
+      });
+  };
 
   return (
     <ScrollView
       showsHorizontalScrollIndicator={false}
       style={{ marginBottom: 50, marginRight: 30 }}
     >
-      <ModalBox trigger={showModal} closeModal={closeModal} label={modalLabel} buttons={<ModalButtons closeModal={closeModal}  />}/>
+      <ModalBox
+        trigger={showModal}
+        closeModal={closeModal}
+        label={modalLabel}
+        buttons={<ModalButtons closeModal={closeModal} />}
+      />
+      <ModalBox
+        trigger={showModalPassword}
+        closeModal={logOut}
+        label={modalLabelPassword}
+        buttons={<ModalButtons closeModal={logOut} />}
+      />
 
       <Box padding="m">
         <Text variant="body" color="darkGrey">
@@ -162,28 +203,15 @@ const PersonalInfo = ({navigation, refreshing}: PersonalInfoProps) => {
           }}
         />
       </Box>
-          {/* <Controller
-          control={control}
-          name="gender"
-          render={ ({ field: {onChange, value, onBlur} }) => {
-            const changeGender = (data) => onChange(data)
-            return (
-              <CheckboxGroup options={genders} radio hookFormData={changeGender}/>
 
-            )
-          }
-
-          }
-           /> */}
-    
       <Box alignItems="center" marginTop="l">
-          <Button
-            variant="primary"
-            label="Change Personal Info"
-            isLoading={isLoading}
-            onPress={handleSubmit(onSubmit)}
-          />
-        </Box>
+        <Button
+          variant="primary"
+          label="Change Personal Info"
+          isLoading={isLoading}
+          onPress={handleSubmit(onSubmit)}
+        />
+      </Box>
       <Box paddingBottom="l" />
 
       <Box padding="m">
@@ -259,15 +287,14 @@ const PersonalInfo = ({navigation, refreshing}: PersonalInfoProps) => {
       </Box>
 
       <Box alignItems="center" marginTop="l">
-          <Button
-            variant="primary"
-            isLoading={isLoading}
-            label="Change Password Info"
-            onPress={handleSubmitPassword(onSubmitPassword)}
-          />
-        </Box>
+        <Button
+          variant="primary"
+          isLoading={isLoading}
+          label="Change Password Info"
+          onPress={handleSubmitPassword(onSubmitPassword)}
+        />
+      </Box>
       <Box paddingBottom="l" />
-
     </ScrollView>
   );
 };

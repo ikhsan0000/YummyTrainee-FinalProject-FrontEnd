@@ -1,16 +1,16 @@
 import {
-  CommonActions,
   DrawerActions,
   StackActions,
   useNavigation,
 } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
-import { Image, Dimensions, StyleSheet } from "react-native";
+import { Image, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import { Header } from "../../components";
 import theme, { Box, Text } from "../../components/Theme";
-import { AuthContext } from "../../services/authentication/auth.context";
 import { ProfileContext } from "../../services/profile/profile.context";
 import DrawerItem, { DrawerItemProps } from "./DrawerItem";
+import * as ImagePicker from 'expo-image-picker';
+import FormData from "form-data";
 
 const aspectRatio = 750 / 1125;
 const { width } = Dimensions.get("window");
@@ -52,13 +52,7 @@ const items: DrawerItemProps[] = [
     icon: "log-out",
     label: "Logout",
     onPress: (navigation: any, onLogout: any) => {
-      // navigation.dispatch(
-      //   CommonActions.reset({
-      //     index: 0,
-      //     routes: [{ name: "Authentication" }],
-      //   })
-      // );
-
+   
       onLogout()
         .then((data: any) => {
           navigation.dispatch(
@@ -79,17 +73,57 @@ const items: DrawerItemProps[] = [
 const Drawer = () => {
   const navigation = useNavigation();
 
-  // const [profile, setProfile] = useState({})
-  
+
   // Profile Context
-  const { profile, currentUserProfile }:any = useContext(ProfileContext)
-  useEffect(async () => {
-    try{
-      await currentUserProfile()
-    } catch(err) {
-      console.log(err)
+  const { profile, currentUserProfile }: any = useContext(ProfileContext);
+
+  const [profileImageFilename, setprofileImageFilename] = useState('default.png');
+  const profilePictureUrl = `http://192.168.0.172:3000/user-profile/profile-picture/${profileImageFilename}`
+  
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    let localUri = result.uri;
+    let filename = localUri.split("/").pop();
+
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+
+    let formData = new FormData();
+    formData.append("file", { uri: localUri, name: filename, type });
+
+    if (!result.cancelled) {
+      // changeProfilePicture(formData)
+      // .then(() => {
+      //   setprofileImageFilename(profile.profilePicture);
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      //   return
+      // })
+      return
     }
-  }, [])
+  };
+  
+  useEffect(async () => {
+    try {
+      await currentUserProfile().then(() => {
+        if(profile.profilePicture !== ''){
+          setprofileImageFilename(profile.profilePicture)
+        }
+        else{
+          setprofileImageFilename('default.png')
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
 
   return (
     <Box flex={1}>
@@ -145,14 +179,26 @@ const Drawer = () => {
           justifyContent="center"
           padding="m"
         >
-          <Box
-            backgroundColor="primary"
-            width={100}
-            height={100}
-            style={{ borderRadius: 50 }}
-            alignSelf="center"
-            top={-theme.spacing.xl}
-          />
+          <TouchableOpacity onPress={() => pickImage()}>
+            <Box
+              backgroundColor="primary"
+              width={100}
+              height={100}
+              style={{ borderRadius: 50 }}
+              alignSelf="center"
+              top={-theme.spacing.xl}
+              overflow="hidden"
+            >
+              <Image
+                style={{ flex: 1 }}
+                source={{
+                  uri: profilePictureUrl,
+                }}
+              />
+              
+            </Box>
+         
+          </TouchableOpacity>
 
           <Box marginBottom="s" top={-20}>
             <Text variant="title1" fontSize={24} textAlign="center">

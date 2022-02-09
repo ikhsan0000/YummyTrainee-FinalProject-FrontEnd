@@ -54,17 +54,8 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
         StackActions.replace('Home')
       );
         
-      // NEED FIX USE ABOVE CODE FOR TESTING
-      // console.log('here2')
-      // if (isAuthenticated) {
-      //   console.log('here')
-      //   navigation.dispatch(
-      //     CommonActions.reset({
-      //       index: 0,
-      //       routes: [{ name: "Home" }],
-      //     })
-      //     );
-      //   }
+    }).catch((err)=> {
+      console.log(err)
     });
   };
 
@@ -140,7 +131,7 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
                 justifyContent="space-between"
                 paddingVertical="m"
               >
-                <Checkbox label="Remeber me" hookFormData={rememberMe} />
+                {/* <Checkbox label="Remeber me" hookFormData={rememberMe} /> */}
 
                 <BorderlessButton
                   rippleColor="rgba(0,0,0,0)"
@@ -152,20 +143,6 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
             );
           }}
         />
-
-        {/* <Box
-          flexDirection="row"
-          justifyContent="space-between"
-          paddingVertical="m"
-        >
-          <Checkbox label="Remeber me" />
-          <BorderlessButton
-            rippleColor="rgba(0,0,0,0)"
-            onPress={() => navigation.navigate("ForgotPassword")}
-          >
-            <Text color="primary">Forgot Password?</Text>
-          </BorderlessButton>
-        </Box> */}
 
         {error && <Text color="danger">Invalid Credentials</Text>}
 

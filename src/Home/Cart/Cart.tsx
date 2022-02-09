@@ -62,7 +62,6 @@ const Cart = ({ navigation }: HomeNavigationProps<"Cart">) => {
                 const updatedItems = cartItems.filter(currentItem => {
                     return currentItem.id !== item.id
                 })
-                console.log(updatedItems)
                 setCartItems(updatedItems);
                 deleteItem(item.id)
               }}
