@@ -10,12 +10,9 @@ export const baseUrlAxios = axios.create({
     },
 })
 
-// export const baseUrlAxiosUpload = axios.create({
-//     baseURL: "http://192.168.0.172:3000/",
-//     headers: {
-//         'Content-Type': 'multipart/form-data'
-//     },
-// })
+export const baseUrlAxiosUpload = axios.create({
+    baseURL: "http://192.168.0.172:3000/"
+})
 
 
 // baseUrlAxios.interceptors.response.use((res) => {
