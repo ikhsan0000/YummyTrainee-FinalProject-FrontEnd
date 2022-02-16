@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Image } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Text } from "../../components/Theme";
 import { Header } from "../../components";
@@ -18,16 +18,28 @@ const tabs = [
 
 const EditProfile = ({ navigation }: HomeNavigationProps<"EditProfile">) => {
   const theme = useTheme();
+
+  // Profile Context
+  const { profile, currentUserProfile }:any = useContext(ProfileContext)
+  const [profileImageFilename, setprofileImageFilename] = useState('default.png');
+  const profilePictureUrl = `http://192.168.0.172:3000/user-profile/images/${profileImageFilename}`
+
   const [refresh, setRefresh] = useState(false)
+  
   const refreshing = () => {
     setRefresh(!refresh)
   }
 
-  // Profile Context
-  const { profile, currentUserProfile }:any = useContext(ProfileContext)
   useEffect(async () => {
     try{
-      await currentUserProfile()
+      await currentUserProfile().then(() => {
+        if(profile.profilePicture !== ''){
+          setprofileImageFilename(profile.profilePicture)
+        }
+        else{
+          setprofileImageFilename('default.png')
+        }
+      });
     } catch(err) {
       console.log(err)
     }
@@ -75,7 +87,15 @@ const EditProfile = ({ navigation }: HomeNavigationProps<"EditProfile">) => {
             style={{ borderRadius: 50 }}
             alignSelf="center"
             top={-theme.spacing.xl - 20}
-          />
+            overflow="hidden"
+          >
+             <Image
+                style={{ flex: 1 }}
+                source={{
+                  uri: profilePictureUrl,
+                }}
+              />
+          </Box>
 
           <Box style={{marginTop:-theme.spacing.xl - 10}}>
             <Text variant="title1" fontSize={24} textAlign="center">

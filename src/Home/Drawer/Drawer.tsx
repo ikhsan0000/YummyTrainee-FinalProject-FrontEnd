@@ -4,12 +4,12 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
-import { Image, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
+import { Image, Dimensions, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import { Header } from "../../components";
 import theme, { Box, Text } from "../../components/Theme";
 import { ProfileContext } from "../../services/profile/profile.context";
 import DrawerItem, { DrawerItemProps } from "./DrawerItem";
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
 import FormData from "form-data";
 
 const aspectRatio = 750 / 1125;
@@ -52,7 +52,6 @@ const items: DrawerItemProps[] = [
     icon: "log-out",
     label: "Logout",
     onPress: (navigation: any, onLogout: any) => {
-   
       onLogout()
         .then((data: any) => {
           navigation.dispatch(
@@ -73,13 +72,14 @@ const items: DrawerItemProps[] = [
 const Drawer = () => {
   const navigation = useNavigation();
 
-
   // Profile Context
-  const { profile, currentUserProfile }: any = useContext(ProfileContext);
+  const { profile, currentUserProfile, changeProfilePicture }: any =
+    useContext(ProfileContext);
 
-  const [profileImageFilename, setprofileImageFilename] = useState('default.png');
-  const profilePictureUrl = `http://192.168.0.172:3000/user-profile/profile-picture/${profileImageFilename}`
-  
+  const [profileImageFilename, setprofileImageFilename] =
+    useState("default.png");
+  const profilePictureUrl = `http://192.168.0.172:3000/user-profile/images/${profileImageFilename}`;
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -88,6 +88,10 @@ const Drawer = () => {
       quality: 1,
     });
 
+    if (result.cancelled) {
+      return;
+    }
+
     let localUri = result.uri;
     let filename = localUri.split("/").pop();
 
@@ -95,29 +99,32 @@ const Drawer = () => {
     let type = match ? `image/${match[1]}` : `image`;
 
     let formData = new FormData();
-    formData.append("file", { uri: localUri, name: filename, type });
+    formData.append("file", {
+      uri: localUri.replace("file:///", "file://") ,
+      name: filename,
+      type,
+    });
 
     if (!result.cancelled) {
-      // changeProfilePicture(formData)
-      // .then(() => {
-      //   setprofileImageFilename(profile.profilePicture);
-      // })
-      // .catch(err => {
-      //   console.log(err)
-      //   return
-      // })
-      return
+      changeProfilePicture(formData)
+        .then(() => {
+          setprofileImageFilename(profile.profilePicture);
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+      return;
     }
   };
-  
-  useEffect(async () => {
+
+  useEffect(() => {
     try {
-      await currentUserProfile().then(() => {
-        if(profile.profilePicture !== ''){
-          setprofileImageFilename(profile.profilePicture)
-        }
-        else{
-          setprofileImageFilename('default.png')
+      currentUserProfile().then(() => {
+        if (profile.profilePicture !== "" || profile.profilePicture !== null) {
+          setprofileImageFilename(profile.profilePicture);
+        } else {
+          setprofileImageFilename("default.png");
         }
       });
     } catch (err) {
@@ -195,9 +202,7 @@ const Drawer = () => {
                   uri: profilePictureUrl,
                 }}
               />
-              
             </Box>
-         
           </TouchableOpacity>
 
           <Box marginBottom="s" top={-20}>

@@ -28,7 +28,7 @@ const { width, height } = Dimensions.get("window");
 
 const ProductDetail = ({ navigation, route }: any) => {
   const { product, favorite } = route.params;
-  const { profile, currentUserProfile }: any = useContext(ProfileContext);
+  const { profile, currentUserProfile, tempFavorite }: any = useContext(ProfileContext);
   const [currentFav, setCurrentFav] = useState([]);
   const [isFavorited, setIsFavorited] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -47,8 +47,8 @@ const ProductDetail = ({ navigation, route }: any) => {
 
   // Check current favorite
   useEffect(() => {
-    currentFav &&
-      currentFav.forEach((favoriteItem: any) => {
+    tempFavorite &&
+      tempFavorite.forEach((favoriteItem: any) => {
         if (favoriteItem.id == product.id) {
           setIsFavorited(true);
         }
@@ -108,6 +108,7 @@ const ProductDetail = ({ navigation, route }: any) => {
     if (isFavorited) {
       await removeFromFavorite(product.id)
         .then(() => {
+          setIsFavorited(!isFavorited)
           setWishlistLabel("Removed from Wishlist");
           setShowModalWishlist(true);
         })
@@ -120,6 +121,7 @@ const ProductDetail = ({ navigation, route }: any) => {
     } else {
       await addToFavorite(product.id)
         .then(() => {
+          setIsFavorited(!isFavorited)
           setWishlistLabel("Added to Wishlist");
           setShowModalWishlist(true);
         })
