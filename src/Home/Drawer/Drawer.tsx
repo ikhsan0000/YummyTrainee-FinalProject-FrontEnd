@@ -4,7 +4,13 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
-import { Image, Dimensions, StyleSheet, TouchableOpacity, Platform } from "react-native";
+import {
+  Image,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import { Header } from "../../components";
 import theme, { Box, Text } from "../../components/Theme";
 import { ProfileContext } from "../../services/profile/profile.context";
@@ -84,7 +90,7 @@ const Drawer = () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     });
 
@@ -100,10 +106,13 @@ const Drawer = () => {
 
     let formData = new FormData();
     formData.append("file", {
-      uri: localUri.replace("file:///", "file://") ,
+      uri: localUri.replace("file:///", "file://"),
       name: filename,
       type,
     });
+
+    let rawFormData = new FormData()
+    rawFormData.append('file', result)
 
     if (!result.cancelled) {
       changeProfilePicture(formData)
@@ -119,17 +128,18 @@ const Drawer = () => {
   };
 
   useEffect(() => {
-    try {
-      currentUserProfile().then(() => {
-        if (profile.profilePicture !== "" || profile.profilePicture !== null) {
-          setprofileImageFilename(profile.profilePicture);
-        } else {
-          setprofileImageFilename("default.png");
-        }
-      });
-    } catch (err) {
+    currentUserProfile()
+    .then(() => {
+      if (profile.profilePicture !== "" || profile.profilePicture !== null) {
+        setprofileImageFilename(profile.profilePicture);
+      } else {
+        setprofileImageFilename("default.png");
+      }
+    })
+    .catch((err:any) => {
       console.log(err);
-    }
+    });
+    return () => { }
   }, []);
 
   return (

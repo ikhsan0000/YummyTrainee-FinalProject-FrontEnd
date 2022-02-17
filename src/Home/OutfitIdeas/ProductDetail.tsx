@@ -28,8 +28,7 @@ const { width, height } = Dimensions.get("window");
 
 const ProductDetail = ({ navigation, route }: any) => {
   const { product, favorite } = route.params;
-  const { profile, currentUserProfile, tempFavorite }: any = useContext(ProfileContext);
-  const [currentFav, setCurrentFav] = useState([]);
+  const { addToFavorite, removeFromFavorite, tempFavorite, onRefreshFavorite }: any = useContext(ProfileContext);
   const [isFavorited, setIsFavorited] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const baseImgUrl = "http://192.168.0.172:3000/products/images/";
@@ -38,12 +37,9 @@ const ProductDetail = ({ navigation, route }: any) => {
   });
   const theme = useTheme();
 
-  // Set current favorites
-  useEffect(async () => {
-    await currentUserProfile().then(() => {
-      setCurrentFav(profile.userFavorites.product);
-    });
-  }, []);
+  useEffect(() => {
+    onRefreshFavorite()
+  }, [])
 
   // Check current favorite
   useEffect(() => {
@@ -53,7 +49,7 @@ const ProductDetail = ({ navigation, route }: any) => {
           setIsFavorited(true);
         }
       });
-  }, [currentFav]);
+  }, [tempFavorite]);
 
   // add to cart modal
   const closeModal = () => {
@@ -70,8 +66,7 @@ const ProductDetail = ({ navigation, route }: any) => {
 
   // Cart Context
   const { addToCart, isLoading }: any = useContext(CartContext);
-  // Profile Context
-  const { addToFavorite, removeFromFavorite }: any = useContext(ProfileContext);
+
 
   let currentProductToCart = {
     productId: product.id,
@@ -112,6 +107,7 @@ const ProductDetail = ({ navigation, route }: any) => {
           setWishlistLabel("Removed from Wishlist");
           setShowModalWishlist(true);
         })
+        // .then(() => onRefreshFavorite())
         .catch((err: any) => {
           console.log(err);
           navigation.dispatch(
@@ -125,6 +121,7 @@ const ProductDetail = ({ navigation, route }: any) => {
           setWishlistLabel("Added to Wishlist");
           setShowModalWishlist(true);
         })
+        // .then(() => onRefreshFavorite())
         .catch((err: any) => {
           console.log(err);
           navigation.dispatch(
@@ -162,6 +159,8 @@ const ProductDetail = ({ navigation, route }: any) => {
         BackHandler.removeEventListener("hardwareBackPress", onBackPress);
     }, [])
   );
+
+    console.log(tempFavorite)
 
   return (
     <Box flex={1} backgroundColor="white">
