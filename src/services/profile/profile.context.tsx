@@ -20,12 +20,20 @@ export const ProfileContextProvider = ({ children }: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const [profile, setProfile] = useState(null);
   const [tempFavorite, setTempFavorite] = useState([])
+  const [refreshFavorite, setRefreshFavorite] = useState(false)
 
   useEffect(() => {
     currentUserProfile().then(() => {
       setTempFavorite(profile.userFavorites.product);
     })
-  }, []);
+    .then(() => {
+      return () => { }
+    })
+  }, [refreshFavorite]);
+
+  const onRefreshFavorite = () => {
+    setRefreshFavorite(!refreshFavorite)
+  }
 
   const pushToTempFavorite = (newItem:any) => {
     const newFavorite = tempFavorite.concat(newItem)
@@ -202,6 +210,7 @@ export const ProfileContextProvider = ({ children }: any) => {
         tempFavorite,
         addToFavorite,
         removeFromFavorite,
+        onRefreshFavorite,
         profile,
         error,
         isLoading,
